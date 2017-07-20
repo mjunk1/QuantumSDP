@@ -1,0 +1,139 @@
+% ********************************************************************    
+% Packages
+% ********************************************************************
+\usepackage[utf8]{inputenc}
+\usepackage{default}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usepackage{pgfplots}
+% \usepackage{tikz-3dplot}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\usepackage{slashed}
+\usepackage{pifont}
+\usepackage{appendixnumberbeamer}
+
+\usepackage[backend=bibtex8,citestyle=authoryear,isbn=false,url=false,doi=false]{biblatex}
+\addbibresource{Bibliography.bib}
+
+% ********************************************************************    
+% Settings
+% ********************************************************************
+
+% biblatex
+\DeclareCiteCommand{\myfootcite}
+  {\footnotetext{\usebibmacro{prenote}}
+  {\usebibmacro{citeindex}%
+    \usebibmacro{author}
+    \printfield{journaltitle}
+    \printfield{volume}
+    (\printfield{year})}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}}
+
+% beamer
+\usetheme{Copenhagen}
+\usecolortheme{beaver}
+% \usefonttheme{structuresmallcapsserif}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{section in toc}[square]
+% \setbeamercolor{section in toc}{use=structure,fg=structure.fg}
+% \setbeamercolor{section in toc}{fg=blue}
+
+% additional settings
+% \hypersetup{colorlinks=true}
+% \everymath{\displaystyle}
+
+
+% tikz & pgf
+\usetikzlibrary{shapes.misc}
+\usetikzlibrary{shapes,snakes}
+\usetikzlibrary{arrows}
+% \tdplotsetmaincoords{70}{30}
+
+% for external nodes
+\tikzstyle{every picture}+=[remember picture]
+
+% \usepgfplotslibrary{external}
+% \tikzexternalize[prefix=gfx/]
+% \tikzset{external/force remake}
+
+\pgfplotsset{compat=1.14}
+
+% ********************************************************************    
+% Commands
+% ********************************************************************
+
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}%
+\hspace{-2.5pt}}
+
+% meta
+\author{Daniel Brosch \and Markus Heinrich}
+\title{Quantum Semidefinite Programming}
+\date{
+  Convex Optimization Seminar \\
+  Bad Honnef \\
+  August 7 -- 9, 2017
+}
+% \institute{
+%   Convex Optimization Seminar, Bad Honnef
+% }
+
+% abbreviations
+\newcommand{\ie}{i.\,e.}
+\newcommand{\Ie}{I.\,e.}
+\newcommand{\eg}{e.\,g.}
+\newcommand{\Eg}{E.\,g.} 
+
+% ********************************************************************    
+% Math definitions
+% ********************************************************************
+% sets
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+
+% MathOperators
+\DeclareMathOperator{\Ric}{Ric}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\Con}{Con}
+
+% operators
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\dd}{\,\mathrm{d}}
+
+% groups
+\newcommand{\Orth}{O}
+\newcommand{\SOrth}{SO}
+\newcommand{\orth}{\mathfrak{O}}
+\newcommand{\sorth}{\mathfrak{so}}
+\newcommand{\Conf}{\mathrm{CO}}
+\newcommand{\conf}{\mathfrak{co}}
+\newcommand{\U}{U}
+\newcommand{\SU}{SU}
+
+% styling and text
+\newcommand{\vect}[1]{{\boldsymbol{#1}}}
+\newcommand{\const}{\text{const}}
+\newcommand{\Op}{\mathcal{O}}
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\Sp}{\mathbb{Sp}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\f}{\tilde{f}}
+\newcommand{\aM}{\overline{a}}
+\newcommand{\TM}{\overline{T}}
+\newcommand{\JM}{\overline{J}_y}
+
+%\newcommand{\slashed}[1]{\ensuremath{\mathrlap{\!\not{\phantom{#1}}}#1}}% \fsl{<symbol>}
+\newcommand{\slashedd}[1]{#1\!\!\!/}

@@ -1,0 +1,38 @@
+\documentclass{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%
+%%% config
+%%%%%%%%%%%%%%%%%%%%%
+
+\input{talk-config}
+
+%%%%%%%%%%%%%%%%%%%%%
+%%% start talk
+%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+% titlepage
+\frame{\titlepage}
+
+% introduction
+\input{chapters/intro.tex}
+
+% outline
+\input{chapters/outline.tex}
+% \begin{frame}
+%  \frametitle{Outline}
+%  \begin{NoHyper}
+%   \tableofcontents
+%  \end{NoHyper}
+% \end{frame}
+
+% slides
+\input{chapters/chapter01.tex}
+
+\appendix
+% bibliography
+\frame[allowframebreaks]{\printbibliography}
+
+
+\end{document}
