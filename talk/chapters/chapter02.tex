@@ -1,0 +1,177 @@
+
+\section{Arora-Kale algorithm}
+
+\begin{frame}{Semidefinite Programs}
+ \begin{columns}
+  \column{0.5\linewidth}
+  Primal problem:
+  \begin{align*}
+    \textbf{max} & \quad \Tr(CX) \\
+    \textbf{s.t.} & \quad \Tr(A_j X) \leq b_j,\;\forall j \in [m] \\
+		      & \quad X \geq 0.
+  \end{align*}
+  \column{0.5\linewidth}
+  Dual problem:
+  \begin{align*}
+    \textbf{min} & \quad b^T y \\
+    \textbf{s.t.} & \quad \sum_{j=1}^m y_j A_j - C \geq 0, \\
+		      & \quad y \geq 0.
+  \end{align*}
+ \end{columns}
+ 
+ \vspace{2\floatsep}
+ 
+ $A_1,\dots,A_m,C$ are Hermitian $n\times n$ matrices and $b\in\R^m$.
+ 
+ \vspace{2\floatsep}
+ 
+ \structure{Assumptions:} $\|C\|, \|A_j\| \leq 1$ and $A_1 = I$, $b_1 = R$
+\end{frame}
+
+
+\begin{frame}{Matrix Multiplicative Weight Method}
+
+\structure{Input:} Parameter $\eta \in (0,1]$, number of rounds $T\in\N$, dimension $d$
+
+\begin{center}
+\begin{tikzpicture}[>=stealth]
+ \node [draw=structure.fg, thick, ellipse, align=center] (P) at (-2.5,0) {Player};
+ \node [draw=structure.fg, thick, ellipse, align=center] (A) at (2.5,0) {Adversary};
+ \draw [<-,thick] (P) to [bend right] (A) node[below=1cm, midway, align=center] {matrix $-I\leq M \leq I$ };
+ \draw [<-,thick] (A) to [bend right] (P) node[above=1cm, midway] {density matrix $\rho$};
+ 
+ \node at (4,-1.3) {\structure{Loss:} $\Tr(M\rho)$};
+\end{tikzpicture}
+\end{center}
+
+\structure{Strategy:} Take $\rho^{(1)} = I/n$. For every $t$: 
+\begin{enumerate}
+ \item send $\rho^{(t)}$, obtain $M^{(t)}$
+ \item update:
+ \begin{equation*}
+  \rho^{(t+1)} = \frac{\exp\left(-\eta \sum_{\tau=1}^t M^{(\tau)}\right) }{\Tr \exp\left(-\eta \sum_{\tau=1}^t M^{(\tau)}\right)}
+ \end{equation*}
+
+\end{enumerate}
+ 
+\end{frame}
+
+\begin{frame}{Matrix Multiplicative Weight Method}
+
+\structure{Strategy:} Take $\rho^{(1)} = I/n$. For every $t\in[T]$: 
+\begin{enumerate}
+ \item send $\rho^{(t)}$, obtain $M^{(t)}$
+ \item update: $\rho^{(t+1)} = \exp\left(-\eta \sum_{\tau=1}^t M^{(\tau)}\right)/\Tr(\dots)$
+\end{enumerate}
+
+\structure{$\Rightarrow$ Upper bound on total loss in the game \footcite{Arora2016}}
+
+\begin{tikzpicture}[>=stealth,transform canvas={scale=0.6},shift={(15cm,-1cm)}]
+ \node [draw=structure.fg, thick, ellipse, align=center] (P) at (-2.5,0) {Player};
+ \node [draw=structure.fg, thick, ellipse, align=center] (A) at (2.5,0) {Adversary};
+ \draw [<-,thick] (P) to [bend right] (A) node[below=1cm, midway, align=center] {matrix $-I\leq M \leq I$ };
+ \draw [<-,thick] (A) to [bend right] (P) node[above=1cm, midway] {density matrix $\rho$};
+ 
+%  \node at (4,-1.5) {\structure{Loss:} $\Tr(M^{(t)}\rho^{(t)})$};
+\end{tikzpicture}
+
+\vspace{\floatsep}
+
+\begin{corollary}
+ If $\Tr\left(M^{(t)}\rho^{(t)}\right)\geq 0$ $\forall t\in[T]$, then it holds
+ \begin{equation*}
+  \lambda_\mathrm{min}\underbrace{\left(\frac{1}{T} \sum_{t=1}^T M^{(t)} \right)}_{\text{almost psd!}} \geq -\eta - \frac{\ln(n)}{\eta T}
+ \end{equation*}
+
+\end{corollary}
+ 
+\end{frame}
+
+\begin{frame}{From MMW to a SPD Solver}
+
+Given a guess $\alpha$ for the dual OPT value, we will construct a dual solution:
+
+\vspace{\floatsep}
+
+\structure{$\oracle(\rho)$} returns a vector $y\in\R^m_{\geq 0}$ such that
+\begin{enumerate}
+ \item $b^Ty \leq \alpha$
+ \item$\Tr\left(\sum_{j=1}^m y_j A_j - C \right)\rho  \geq 0$
+\end{enumerate}
+
+\vspace{\floatsep}
+
+The \structure{adversary's response} has to be normalised:
+\begin{equation*}
+ M = \frac{1}{w} \left( \sum_{j=1}^m y_j A_j - C \right)
+\end{equation*}
+
+
+\begin{tikzpicture}[transform canvas={scale=0.9},shift={(11cm,2.5cm)}]
+ \node [draw=structure.fg, thick, ellipse, align=center] (A) at (0,0) {Adversary};
+ \node [draw=alerted text.fg, inner sep=2mm, thick, align=center] (O) at (0,2) {$\oracle$};
+ 
+ \draw [->,thick] (A) to [bend right] node[right] {$\rho$} (O);
+ \draw [->,thick] (O) to [bend right] node[left] {$y$} (A);
+\end{tikzpicture}
+
+Here, $w$ is the \structure{width} of the ORACLE:
+\begin{equation*}
+ w = \sup \bigg\| \sum_{j=1}^m y_j A_j - C  \bigg\|
+\end{equation*}
+
+
+\end{frame}
+
+\begin{frame}{From MMW to a SPD Solver}
+
+\structure{Adversary:} Let $y^{(t)}=\oracle(\rho^{(t)})$ and respond 
+\begin{equation*}
+ M^{(t)}= \frac{1}{w} \left( \sum_{j=1}^m y^{(t)}_j A_j - C \right)
+\end{equation*}
+
+\begin{tikzpicture}[transform canvas={scale=0.9},shift={(11cm,1cm)}]
+ \node [draw=structure.fg, thick, ellipse, align=center] (A) at (0,0) {Adversary};
+ \node [draw=alerted text.fg, inner sep=2mm, thick, align=center] (O) at (0,2) {$\oracle$};
+ 
+ \draw [->,thick] (A) to [bend right] node[right] {$\rho$} (O);
+ \draw [->,thick] (O) to [bend right] node[left] {$y$} (A);
+\end{tikzpicture}
+
+\vspace{\floatsep}
+
+By MMW, the average $\tilde{y}=\frac 1 T \sum_{t=1}^T y^{(t)} $ is \structure{almost dual feasible}:
+\begin{equation*}
+ - \left( \eta + \frac{\ln(n)}{\eta T}\right) I \leq \frac{1}{T} \sum_{t=1}^T M^{(t)} = \frac 1 w \left(\sum_{j=1}^m \tilde{y}_j A_j - C \right)
+\end{equation*}
+
+\vspace{\floatsep}
+
+Since $A_1=I$, increasing $\tilde{y}_1$ turns this matrix psd.
+
+\end{frame}
+
+\begin{frame}{The Arora-Kale Meta-Algorithm}
+ See blackboard \dots
+\end{frame}
+
+\begin{frame}{The $\oracle$}
+ \structure{Recall:} $\oracle(\rho)$ returns a vector $y\in\R^m_{\geq 0}$ such that
+ \begin{equation*}
+  b^T y \leq \alpha \qquad\text{and}\qquad \Tr\left(\sum_{j=1}^m y_j A_j - C \right)\rho  \geq 0
+ \end{equation*}
+ 
+ \vspace{\floatsep}
+ 
+ Runtime of Arora-Kale \structure{depends strongly} on the ORACLE via
+ \begin{itemize}
+  \item its concrete implementation
+  \item its \structure{width} $w = \sup \| \sum_{j=1}^m y_j A_j - C  \|$ by the needed iterations
+ \end{itemize}
+ 
+ \vspace{\floatsep}
+
+ Note: For a ORACLE with bounded output $\|y\|_1 \leq r$ we have $w \leq r + 1$.
+ 
+
+\end{frame}
