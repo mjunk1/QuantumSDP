@@ -37,11 +37,60 @@
 
 \subsection{The Oracle}
 
+%TODO Layout
 \begin{frame}{The Oracle: Problem definition}
+\textbf{Input: }
+\begin{align*}
+\alpha&\in\R\\
+r&\in \R_{\geq 0}\\
+a&\in \R^m \text{ with } a_j\approx \Tr(A_j p)\\
+b&\in \R^m\\
+c&\approx \Tr(Cp)-\varepsilon
+\end{align*}
+\textbf{Output: } $y\in \mathbb{R}^m$ with:
+%TODO Fix spacing
+\begin{columns}
+\column{0.5\linewidth}
+\begin{align*}
+\|y\|_1&\leq r\\
+b^T y&\leq \alpha\\
+a^T y&\geq c\\
+y&\geq 0
+\end{align*}
+\column{0.5\linewidth}
+\begin{block}{Compared to the dual SDP:}
+\begin{align*}
+\min\quad&b^T y\\
+\text{s.t. }&\sum_{j=1}^m y_j A_j - C\succeq 0\\
+&y\geq 0
+\end{align*}
+\end{block}
 
+\end{columns}
 \end{frame}
 
 \begin{frame}{Simplifying the problem}
+Substituting $y=Nq$ with $N=\|y\|_1$ and $\|q\|_1=1$ results in:
+
+%Some ugly magic for rcases inside of align
+\begin{equation*}
+ \begin{split}
+  b^T q&\leq \alpha/N\\
+  a^T q&\geq c/N\\
+  \begin{aligned}
+   \|q\|_1\\
+   q
+  \end{aligned}
+  &
+  \begin{rcases*}
+   =1\\
+   \geq 0
+  \end{rcases*} \text{convex combination coefficients}  \\
+  0&<N\leq r
+ \end{split}
+\end{equation*}
+\pause
+$\Rightarrow$ Search the convex combination of a $P\in\mathrm{conv}\{p_i=(b_i,a_i)\}$ which is in the upper left of $(\alpha/N, c/N)$ for an N.
 
 \end{frame}
 
@@ -49,11 +98,32 @@
 
 \end{frame}
 
-\begin{frame}{Understanding $G_N$}
+\begin{frame}{Understanding the area $G$}
 
 \end{frame}
 
 \begin{frame}{The algorithm}
+\begin{algorithmic}
+\If{$\alpha\geq 0$ and $c\leq 0$}
+	\Comment{$G$ is here all of $\R^2$}
+    \State \Return $y=0$
+    \pause
+\ElsIf{$\exists i: p_i\in G$}
+    \State \Return $y=Ne_i$ with $N=c/a_i$
+    \pause
+\Else
+	\State Find $j,k$ such that $\overline{p_j p_k}\cap G\neq \emptyset$
+	\If{Such $j,k$ exist}
+		\State Calculate a fitting convex combination $q$ and scalar $N$
+		\State \Return $y=Nq$
+	\Else
+		\State \Return	No $y$ found.
+	\EndIf
+\EndIf
+\end{algorithmic}
+\end{frame}
+
+\begin{frame}{How to find $j,k$ with $\overline{p_j p_k}\cap G\neq \emptyset$}
 
 \end{frame}
 
