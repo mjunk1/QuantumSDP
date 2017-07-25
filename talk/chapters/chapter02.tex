@@ -8,7 +8,7 @@
   \begin{align*}
     \textbf{max} & \quad \Tr(CX) \\
     \textbf{s.t.} & \quad \Tr(A_j X) \leq b_j,\;\forall j \in [m] \\
-		      & \quad X \geq 0.
+		      & \quad X \succeq 0.
   \end{align*}
   \column{0.5\linewidth}
   Dual problem:
@@ -31,18 +31,29 @@
 
 \begin{frame}{Matrix Multiplicative Weight Method}
 
-\structure{Input:} Parameter $\eta \in (0,1]$, number of rounds $T\in\N$, dimension $d$
+\structure{Input:} Parameter $\eta \in (0,1]$, number of rounds $T\in\N$
 
-\begin{center}
+\vspace{\floatsep}
+
+\begin{columns}
+\column{0.5\linewidth}
 \begin{tikzpicture}[>=stealth]
- \node [draw=structure.fg, thick, ellipse, align=center] (P) at (-2.5,0) {Player};
- \node [draw=structure.fg, thick, ellipse, align=center] (A) at (2.5,0) {Adversary};
- \draw [<-,thick] (P) to [bend right] (A) node[below=1cm, midway, align=center] {matrix $-I\leq M \leq I$ };
- \draw [<-,thick] (A) to [bend right] (P) node[above=1cm, midway] {density matrix $\rho$};
- 
- \node at (4,-1.3) {\structure{Loss:} $\Tr(M\rho)$};
+ \node [draw=structure.fg, thick, ellipse, align=center] (P) at (-2,0) {Player};
+ \node [draw=structure.fg, thick, ellipse, align=center] (A) at (2,0) {Adversary};
+ \draw [<-,thick] (P) to [bend right] (A) node[below=0.2cm, midway, align=center] {$M$};
+ \draw [<-,thick] (A) to [bend right] (P) node[above=0.2cm, midway] {$\rho$};
 \end{tikzpicture}
-\end{center}
+
+\column{0.45\linewidth}
+\begin{itemize}
+ \item Hermitian, psd $\rho\in\C^{n\times n}$ with $\Tr\rho=1$
+ \item Hermitian $M\in\C^{n\times n}$ with $-I \preceq M \preceq I$
+ \item Loss: $\Tr(M\rho)$
+\end{itemize}
+
+\end{columns}
+
+\vspace{3\floatsep}
 
 \structure{Strategy:} Take $\rho^{(1)} = I/n$. For every $t$: 
 \begin{enumerate}
@@ -66,21 +77,19 @@
 
 \structure{$\Rightarrow$ Upper bound on total loss in the game \footcite{Arora2016}}
 
-\begin{tikzpicture}[>=stealth,transform canvas={scale=0.6},shift={(15cm,-1cm)}]
- \node [draw=structure.fg, thick, ellipse, align=center] (P) at (-2.5,0) {Player};
- \node [draw=structure.fg, thick, ellipse, align=center] (A) at (2.5,0) {Adversary};
- \draw [<-,thick] (P) to [bend right] (A) node[below=1cm, midway, align=center] {matrix $-I\leq M \leq I$ };
- \draw [<-,thick] (A) to [bend right] (P) node[above=1cm, midway] {density matrix $\rho$};
- 
-%  \node at (4,-1.5) {\structure{Loss:} $\Tr(M^{(t)}\rho^{(t)})$};
+\begin{tikzpicture}[>=stealth,transform canvas={scale=0.8},shift={(11cm,-0.5cm)}]
+ \node [draw=structure.fg, thick, ellipse, align=center] (P) at (-2,0) {Player};
+ \node [draw=structure.fg, thick, ellipse, align=center] (A) at (2,0) {Adversary};
+ \draw [<-,thick] (P) to [bend right] (A) node[below=0.2cm, midway, align=center] {$M$};
+ \draw [<-,thick] (A) to [bend right] (P) node[above=0.2cm, midway] {$\rho$};
 \end{tikzpicture}
 
 \vspace{\floatsep}
 
 \begin{corollary}
- If $\Tr\left(M^{(t)}\rho^{(t)}\right)\geq 0$ $\forall t\in[T]$, then it holds
+ If $\Tr\left(M^{(t)}\rho^{(t)}\right)\geq -\delta$ $\forall t\in[T]$, then it holds
  \begin{equation*}
-  \lambda_\mathrm{min}\underbrace{\left(\frac{1}{T} \sum_{t=1}^T M^{(t)} \right)}_{\text{almost psd!}} \geq -\eta - \frac{\ln(n)}{\eta T}
+  \lambda_\mathrm{min}\underbrace{\left(\frac{1}{T} \sum_{t=1}^T M^{(t)} \right)}_{\text{almost psd!}} \geq - \left( \eta + \frac{\ln(n)}{\eta T} + \delta \right)
  \end{equation*}
 
 \end{corollary}
@@ -93,11 +102,12 @@ Given a guess $\alpha$ for the dual OPT value, we will construct a dual solution
 
 \vspace{\floatsep}
 
-\structure{$\oracle(\rho)$} returns a vector $y\in\R^m_{\geq 0}$ such that
+\structure{$\oracle_\delta(\rho)$} returns a vector $y\in\R^m_{\geq 0}$ such that
 \begin{enumerate}
  \item $b^Ty \leq \alpha$
- \item$\Tr\left(\sum_{j=1}^m y_j A_j - C \right)\rho  \geq 0$
+ \item$\Tr\left(\sum_{j=1}^m y_j A_j - C \right)\rho  \geq -\delta$
 \end{enumerate}
+If no such $y$ exists, it ``fails''.
 
 \vspace{\floatsep}
 
@@ -125,12 +135,12 @@ Here, $w$ is the \structure{width} of the ORACLE:
 
 \begin{frame}{From MMW to a SPD Solver}
 
-\structure{Adversary:} Let $y^{(t)}=\oracle(\rho^{(t)})$ and respond 
+\structure{Adversary:} Let $y^{(t)}=\oracle_\delta(\rho^{(t)})$ and respond 
 \begin{equation*}
  M^{(t)}= \frac{1}{w} \left( \sum_{j=1}^m y^{(t)}_j A_j - C \right)
 \end{equation*}
 
-\begin{tikzpicture}[transform canvas={scale=0.9},shift={(11cm,1cm)}]
+\begin{tikzpicture}[transform canvas={scale=0.9},shift={(11cm,0.5cm)}]
  \node [draw=structure.fg, thick, ellipse, align=center] (A) at (0,0) {Adversary};
  \node [draw=alerted text.fg, inner sep=2mm, thick, align=center] (O) at (0,2) {$\oracle$};
  
@@ -140,38 +150,84 @@ Here, $w$ is the \structure{width} of the ORACLE:
 
 \vspace{\floatsep}
 
-By MMW, the average $\tilde{y}=\frac 1 T \sum_{t=1}^T y^{(t)} $ is \structure{almost dual feasible}:
+Assume no ORACLE fails, then the average $\tilde{y}=\frac 1 T \sum_{t=1}^T y^{(t)} $ is \structure{almost dual-feasible} by MMW:
 \begin{equation*}
- - \left( \eta + \frac{\ln(n)}{\eta T}\right) I \leq \frac{1}{T} \sum_{t=1}^T M^{(t)} = \frac 1 w \left(\sum_{j=1}^m \tilde{y}_j A_j - C \right)
+ - \underbrace{\left( \eta + \frac{\ln(n)}{\eta T} + \delta \right)}_{=: c} I \; \preceq \; \frac{1}{T} \sum_{t=1}^T M^{(t)} \; = \; \frac 1 w \left(\sum_{j=1}^m \tilde{y}_j A_j - C \right)
 \end{equation*}
 
 \vspace{\floatsep}
 
-Since $A_1=I$, increasing $\tilde{y}_1$ turns this matrix psd.
+Since $A_1=I$, adding $wc$ to $\tilde{y}_1$ turns this matrix psd.
+
+\end{frame}
+
+\begin{frame}{The $\oracle$}
+ \structure{Recall:} $\oracle_\delta(\rho)$ returns a vector $y\in\mathcal{P}_\delta(\rho)$, where
+ \begin{equation*}
+  \mathcal{P}_\delta(\rho) = \bigg\{ y\in\R^m_{\geq 0} \, \Big| \, b^T y \leq \alpha, \Tr\Big(\sum_{j=1}^m y_j A_j - C \Big)\rho  \geq -\delta \bigg\}.
+ \end{equation*}
+ If $\mathcal{P}_0(\rho)=\emptyset$, then ORACLE returns ``fail''.
+ 
+ \vspace{2\floatsep}
+ 
+ \begin{lemma}[\cite{Arora2016}]
+  If $\mathcal{P}_0(\rho)$ is empty, then a suitably scaled version of $X=R\rho$ is primal-feasible with objective value $\geq \alpha$.
+ \end{lemma}
+
+ \vspace{\floatsep}
+ 
+ \structure{$\Rightarrow$ If construction fails, we still get a primal-feasible solution.}
+ 
 
 \end{frame}
 
 \begin{frame}{The Arora-Kale Meta-Algorithm}
- See blackboard \dots
+
+ Given error $\varepsilon>0$, set $T=\lceil 9 w^2 R^2 \ln(n) \varepsilon^{-2} \rceil$, $\eta=\sqrt{\ln(n)/T}$.
+ 
+ \vspace{\floatsep}
+ 
+ Set $\rho^{(1)}=I/n$.
+ 
+ \vspace{0.25\floatsep}
+ 
+ \structure{for} $t=1,\dots,T$: \\[0.2\floatsep]
+ \quad Let $y^{(t)} = \oracle_{\varepsilon/3R}(\rho^{(t)})$. \\[0.2\floatsep]
+ \quad \structure{if} $\oracle$ outputted ``fail'': \\[0.2\floatsep]
+ \quad \quad \structure{return} ``Higher'' and $X^{(t)} = R\rho^{(t)}$. \\[0.2\floatsep]
+ \quad Set $M^{(t)} = \frac{1}{w} \big( \sum_{j=1}^m y^{(t)}_j A_j - C \big)$. \\[0.2\floatsep]
+ \quad Set $H^{(t)} = \sum_{\tau=1}^t M^{(\tau)}$. \\[0.2\floatsep]
+ \quad Set $\rho^{(t+1)} = e^{-\eta H^{(t)}}/\Tr e^{-\eta H^{(t)}}$ \\[0.2\floatsep]
+ \structure{return} ``Lower'' and $\bar y = \frac{\varepsilon}{R} e_1 + \frac{1}{T}\sum_{t=1}^T y^{(t)}$.
+
+ \vspace{2\floatsep}
+ 
+ No ``fail'' $\Rightarrow$ $\bar y$ is \structure{dual-feasible} with OPT value $b^T\bar{y} \leq \alpha + \varepsilon$.
+ 
 \end{frame}
 
-\begin{frame}{The $\oracle$}
- \structure{Recall:} $\oracle(\rho)$ returns a vector $y\in\R^m_{\geq 0}$ such that
- \begin{equation*}
-  b^T y \leq \alpha \qquad\text{and}\qquad \Tr\left(\sum_{j=1}^m y_j A_j - C \right)\rho  \geq 0
- \end{equation*}
- 
- \vspace{\floatsep}
- 
- Runtime of Arora-Kale \structure{depends strongly} on the ORACLE via
- \begin{itemize}
-  \item its concrete implementation
-  \item its \structure{width} $w = \sup \| \sum_{j=1}^m y_j A_j - C  \|$ by the needed iterations
- \end{itemize}
- 
- \vspace{\floatsep}
 
- Note: For a ORACLE with bounded output $\|y\|_1 \leq r$ we have $w \leq r + 1$.
+
+\begin{frame}{Implementation}
  
+ \structure{Runtime} of Arora-Kale \structure{depends strongly} on the ORACLE via
+ \begin{itemize}
+  \item its \structure{width} $w = \sup \| \sum_{j=1}^m y_j A_j - C  \|$:
+  
+    \vspace{0.25\floatsep}
+  
+    For a ORACLE with bounded output $\|y\|_1 \leq r$ we have $w \leq r + 1$.
+  
+  \item its concrete \structure{implementation}:
+  
+   \vspace{0.5\floatsep}
+   
+   ORACLE depends on $\rho$ only through $\Tr(A_j \rho)$, $\Tr(C\rho)$
+   
+   \vspace{0.5\floatsep}
+   
+   Fast implementation should try to access inner products directly without computing $\rho \propto e^{-\eta H}$   
+  
+ \end{itemize}
 
 \end{frame}

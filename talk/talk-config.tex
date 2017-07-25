@@ -15,6 +15,7 @@
 \usepackage{slashed}
 \usepackage{pifont}
 \usepackage{appendixnumberbeamer}
+\usepackage{tcolorbox}
 
 \usepackage[backend=bibtex8,citestyle=authoryear,isbn=false,url=false,doi=false]{biblatex}
 \addbibresource{Bibliography.bib}
@@ -48,6 +49,19 @@
 % \hypersetup{colorlinks=true}
 % \everymath{\displaystyle}
 
+\tcbset{%
+%     noparskip,
+    colback=gray!10, %background color of the box
+    colframe=gray!40, %color of frame and title background
+    coltext=black, %color of body text
+    coltitle=black, %color of title text 
+    fonttitle=\bfseries,
+%     alerted/.style={coltitle=red, 
+%                      colframe=gray!40},
+%     example/.style={coltitle=black, 
+%                      colframe=green!20,             
+%                      colback=green!5},
+    }
 
 % tikz & pgf
 \usetikzlibrary{shapes.misc}
