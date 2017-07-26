@@ -4,29 +4,33 @@
 
 \begin{frame}{Quantum Computing in a Nutshell}
 
-\begin{block}{Quantum Computing:}
- Performing computational tasks using the laws of quantum mechanics.
-\end{block}
+\begin{columns}
+ \column{0.6\linewidth}
+    \begin{block}{Quantum register}
+    $N$-qubit states $\ket{q_1,\dots,q_N}\in\C^{2^N}$
+    \end{block}
+    
+    \vspace{\floatsep}
 
- \begin{columns}
-  \column{0.5\linewidth}
-  \structure{Allows for more powerful and efficient ways of computation (hopefully!)}
-  
-  Shor's algorithm, Grover search, \dots
-  
+    \begin{block}{Quantum circuit}
+    Unitaries $U_1,\dots,U_L\in \SU(2^N)$
+    \end{block}
+    
+    \vspace{\floatsep}
+    
+    \begin{block}{Measurement}
+    $\Rightarrow$ computational result
+    \end{block}
+ 
+ \column{0.4\linewidth}
   \vspace{\floatsep}
-  
-  \alert{But: Really hard to accomplish!}
-  
-  \column{0.5\linewidth}
-    \begin{figure}
-     \centering
-     \includegraphics[width=\linewidth]{gfx/Linear9XmonSurfaceCode}
-     \caption{\footnotesize Martinis group website, UCSB}
-    \end{figure}
-
- \end{columns}
-
+    \Qcircuit @C=1em @R=1em {
+      \lstick{\ket{q_1}} & \gate{U_1} & \qw & \multigate{1}{U_3} & \meter  \\
+      \lstick{\ket{q_2}} & \qw & \multigate{1}{U_2} & \ghost{U_3} & \meter \\
+      \lstick{\ket{q_3}} & \qw & \ghost{U_2} & \qw & \meter
+    }
+ 
+\end{columns}
 
 \end{frame}
 

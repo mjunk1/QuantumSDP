@@ -67,7 +67,7 @@
  \item send $\rho^{(t)}$, obtain $M^{(t)}$
  \item update:
  \begin{equation*}
-  \rho^{(t+1)} = \frac{\exp\left(-\eta \sum_{\tau=1}^t M^{(\tau)}\right) }{\Tr \exp\left(-\eta \sum_{\tau=1}^t M^{(\tau)}\right)}
+  \rho^{(t+1)} = \frac{\exp\left(-\eta \sum_{\tau=1}^t M^{(\tau)}\right) }{\Tr \exp\left(-\eta \sum_{\tau=1}^t M^{(\tau)}\right)} \quad \text{\structure{``Gibbs state''}}
  \end{equation*}
 
 \end{enumerate}
@@ -266,7 +266,7 @@ Given error $\varepsilon>0$, set $T=\lceil 9 w^2 R^2 \ln(n) \varepsilon^{-2} \rc
 
 
 
-\begin{frame}{Implementation}
+\begin{frame}{Towards Implementation}
  
  \structure{Runtime} of Arora-Kale \structure{depends strongly} on the ORACLE via
  \begin{itemize}

@@ -49,24 +49,24 @@ c&\approx \Tr(Cp)-\varepsilon
 \end{align*}
 \textbf{Output: } $y\in \mathbb{R}^m$ with:
 %TODO Fix spacing
-\begin{columns}
-\column{0.5\linewidth}
+% \begin{columns}
+% \column{0.5\linewidth}
 \begin{align*}
-\|y\|_1&\leq r\\
-b^T y&\leq \alpha\\
-a^T y&\geq c\\
-y&\geq 0
+\|y\|_1&\leq r && \text{\structure{Compared to the dual SDP}}\\
+b^T y&\leq \alpha&&\min \quad b^T y\\
+a^T y&\geq c&&\text{s.t. } \quad \sum_{j=1}^m y_j A_j - C\succeq 0\\
+y&\geq 0 && \qquad y\geq 0
 \end{align*}
-\column{0.5\linewidth}
-\begin{block}{Compared to the dual SDP:}
-\begin{align*}
-\min\quad&b^T y\\
-\text{s.t. }&\sum_{j=1}^m y_j A_j - C\succeq 0\\
-&y\geq 0
-\end{align*}
-\end{block}
+% \column{0.5\linewidth}
+% \begin{block}{Compared to the dual SDP:}
+% \begin{align*}
+% \min\quad&b^T y\\
+% \text{s.t. }&\sum_{j=1}^m y_j A_j - C\succeq 0\\
+% &y\geq 0
+% \end{align*}
+% \end{block}
 
-\end{columns}
+% \end{columns}
 \end{frame}
 
 \begin{frame}{Simplifying the problem}
