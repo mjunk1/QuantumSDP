@@ -8,14 +8,14 @@
   \begin{align*}
     \textbf{max} & \quad \Tr(CX) \\
     \textbf{s.t.} & \quad \Tr(A_j X) \leq b_j,\;\forall j \in [m] \\
-		      & \quad X \succeq 0.
+		      & \quad X\in\C^{n\times n}, X \succeq 0.
   \end{align*}
   \column{0.5\linewidth}
   Dual problem:
   \begin{align*}
     \textbf{min} & \quad b^T y \\
     \textbf{s.t.} & \quad \sum_{j=1}^m y_j A_j - C \geq 0, \\
-		      & \quad y \geq 0.
+		      & \quad y \in\R^m, y \geq 0.
   \end{align*}
  \end{columns}
  
@@ -23,9 +23,14 @@
  
  $A_1,\dots,A_m,C$ are Hermitian $n\times n$ matrices and $b\in\R^m$.
  
- \vspace{2\floatsep}
+ \vspace{\floatsep}
  
- \structure{Assumptions:} $\|C\|, \|A_j\| \leq 1$ and $A_1 = I$, $b_1 = R$
+ \structure{Assumptions:} 
+ \begin{itemize}
+  \item Normalisation: $\|C\|, \|A_j\| \leq 1$
+  \item Trace bound: $A_1 = I$, $b_1 = R$ $\Rightarrow$ $\Tr X \leq R$
+ \end{itemize}
+
 \end{frame}
 
 
@@ -39,7 +44,7 @@
 \column{0.5\linewidth}
 \begin{tikzpicture}[>=stealth]
  \node [draw=structure.fg, thick, ellipse, align=center] (P) at (-2,0) {Player};
- \node [draw=structure.fg, thick, ellipse, align=center] (A) at (2,0) {Adversary};
+ \node [draw=alerted text.fg, thick, ellipse, align=center] (A) at (2,0) {Adversary};
  \draw [<-,thick] (P) to [bend right] (A) node[below=0.2cm, midway, align=center] {$M$};
  \draw [<-,thick] (A) to [bend right] (P) node[above=0.2cm, midway] {$\rho$};
 \end{tikzpicture}
@@ -55,7 +60,9 @@
 
 \vspace{3\floatsep}
 
-\structure{Strategy:} Take $\rho^{(1)} = I/n$. For every $t$: 
+\pause
+
+\structure{Strategy:} Take $\rho^{(1)} = I/n$. For every $t\in [T]$: 
 \begin{enumerate}
  \item send $\rho^{(t)}$, obtain $M^{(t)}$
  \item update:
@@ -75,14 +82,18 @@
  \item update: $\rho^{(t+1)} = \exp\left(-\eta \sum_{\tau=1}^t M^{(\tau)}\right)/\Tr(\dots)$
 \end{enumerate}
 
+\vspace{\floatsep}
+
 \structure{$\Rightarrow$ Upper bound on total loss in the game \footcite{Arora2016}}
 
-\begin{tikzpicture}[>=stealth,transform canvas={scale=0.8},shift={(11cm,-0.5cm)}]
- \node [draw=structure.fg, thick, ellipse, align=center] (P) at (-2,0) {Player};
- \node [draw=structure.fg, thick, ellipse, align=center] (A) at (2,0) {Adversary};
- \draw [<-,thick] (P) to [bend right] (A) node[below=0.2cm, midway, align=center] {$M$};
- \draw [<-,thick] (A) to [bend right] (P) node[above=0.2cm, midway] {$\rho$};
+\begin{tikzpicture}[>=stealth,transform canvas={scale=0.9},shift={(11cm,-1.5cm)}]
+ \node [draw=structure.fg, thick, ellipse, align=center] (P) at (0,0) {Player};
+ \node [draw=alerted text.fg, thick, ellipse, align=center] (A) at (0,2) {Adversary};
+ \draw [->,thick] (P) to [bend right] node[right] {$\rho$} (A);
+ \draw [->,thick] (A) to [bend right] node[left] {$M$} (P);
 \end{tikzpicture}
+
+\pause
 
 \vspace{\floatsep}
 
@@ -98,9 +109,11 @@
 
 \begin{frame}{From MMW to a SPD Solver}
 
-Given a guess $\alpha$ for the dual OPT value, we will construct a dual solution:
+Given a guess $\alpha$ for the dual optimal value, we will construct a dual solution:
 
 \vspace{\floatsep}
+
+\pause
 
 \structure{$\oracle_\delta(\rho)$} returns a vector $y\in\R^m_{\geq 0}$ such that
 \begin{enumerate}
@@ -109,21 +122,25 @@ Given a guess $\alpha$ for the dual OPT value, we will construct a dual solution
 \end{enumerate}
 If no such $y$ exists, it ``fails''.
 
-\vspace{\floatsep}
+
+\begin{tikzpicture}[transform canvas={scale=0.9},shift={(11cm,0cm)}]
+ \node [draw=alerted text.fg, thick, ellipse, align=center] (A) at (0,0) {Adversary};
+ \node [draw=orange, inner sep=2mm, thick, align=center] (O) at (0,2) {$\oracle$};
+ \node [draw=structure.fg, thick, ellipse, align=center] (P) at (0,-2) {Player};
+ 
+ \draw [->,thick] (P) to [bend right] node[right] {$\rho$} (A);
+ \draw [->,thick] (A) to [bend right] node[left] {$M$} (P);
+ 
+ \draw [->,thick] (A) to [bend right] node[right] {$\rho$} (O);
+ \draw [->,thick] (O) to [bend right] node[left] {$y$} (A);
+\end{tikzpicture}
+
+\pause
 
 The \structure{adversary's response} has to be normalised:
 \begin{equation*}
  M = \frac{1}{w} \left( \sum_{j=1}^m y_j A_j - C \right)
 \end{equation*}
-
-
-\begin{tikzpicture}[transform canvas={scale=0.9},shift={(11cm,2.5cm)}]
- \node [draw=structure.fg, thick, ellipse, align=center] (A) at (0,0) {Adversary};
- \node [draw=alerted text.fg, inner sep=2mm, thick, align=center] (O) at (0,2) {$\oracle$};
- 
- \draw [->,thick] (A) to [bend right] node[right] {$\rho$} (O);
- \draw [->,thick] (O) to [bend right] node[left] {$y$} (A);
-\end{tikzpicture}
 
 Here, $w$ is the \structure{width} of the ORACLE:
 \begin{equation*}
@@ -135,75 +152,116 @@ Here, $w$ is the \structure{width} of the ORACLE:
 
 \begin{frame}{From MMW to a SPD Solver}
 
-\structure{Adversary:} Let $y^{(t)}=\oracle_\delta(\rho^{(t)})$ and respond 
-\begin{equation*}
- M^{(t)}= \frac{1}{w} \left( \sum_{j=1}^m y^{(t)}_j A_j - C \right)
-\end{equation*}
+\begin{columns}
+ \column{0.8\linewidth}
 
-\begin{tikzpicture}[transform canvas={scale=0.9},shift={(11cm,0.5cm)}]
- \node [draw=structure.fg, thick, ellipse, align=center] (A) at (0,0) {Adversary};
- \node [draw=alerted text.fg, inner sep=2mm, thick, align=center] (O) at (0,2) {$\oracle$};
- 
- \draw [->,thick] (A) to [bend right] node[right] {$\rho$} (O);
- \draw [->,thick] (O) to [bend right] node[left] {$y$} (A);
-\end{tikzpicture}
+  \structure{Adversary:} Call $\oracle_\delta$ and respond 
+  \begin{equation*}
+  M^{(t)}= \frac{1}{w} \left( \sum_{j=1}^m y^{(t)}_j A_j - C \right)
+  \end{equation*}
+
+  \vspace{\floatsep}
+  
+  \uncover<2->{
+
+  The average $\tilde{y}=\frac 1 T \sum_{t=1}^T y^{(t)} $ is \structure{almost dual-feasible} by MMW:
+  \begin{multline*}
+  - \underbrace{\left( \eta + \frac{\ln(n)}{\eta T} + \delta \right)}_{=: c} I \preceq \frac{1}{T} \sum_{t=1}^T M^{(t)}  = \frac 1 w \left(\sum_{j=1}^m \tilde{y}_j A_j - C \right)
+  \end{multline*}
+  
+  }
+
+  \column{0.2\linewidth}
+
+  \begin{tikzpicture}[transform canvas={scale=0.9},shift={(1.5cm,1cm)}]
+  \node [draw=alerted text.fg, thick, ellipse, align=center] (A) at (0,0) {Adversary};
+  \node [draw=orange, inner sep=2mm, thick, align=center] (O) at (0,2) {$\oracle_\delta$};
+  \node [draw=structure.fg, thick, ellipse, align=center] (P) at (0,-2) {Player};
+  
+  \draw [->,thick] (P) to [bend right] node[right] {$\rho^{(t)}$} (A);
+  \draw [->,thick] (A) to [bend right] node[left] {$M^{(t)}$} (P);
+  
+  \draw [->,thick] (A) to [bend right] node[right] {$\rho^{(t)}$} (O);
+  \draw [->,thick] (O) to [bend right] node[left] {$y^{(t)}$} (A);
+  \end{tikzpicture}
+
+\end{columns}
 
 \vspace{\floatsep}
 
-Assume no ORACLE fails, then the average $\tilde{y}=\frac 1 T \sum_{t=1}^T y^{(t)} $ is \structure{almost dual-feasible} by MMW:
+\uncover<3->{
+Since $A_1=I$, the following choice turns this matrix psd:
 \begin{equation*}
- - \underbrace{\left( \eta + \frac{\ln(n)}{\eta T} + \delta \right)}_{=: c} I \; \preceq \; \frac{1}{T} \sum_{t=1}^T M^{(t)} \; = \; \frac 1 w \left(\sum_{j=1}^m \tilde{y}_j A_j - C \right)
+ \bar{y} = wc \, e_1 + \tilde{y}
 \end{equation*}
-
-\vspace{\floatsep}
-
-Since $A_1=I$, adding $wc$ to $\tilde{y}_1$ turns this matrix psd.
+}
 
 \end{frame}
 
-\begin{frame}{The $\oracle$}
- \structure{Recall:} $\oracle_\delta(\rho)$ returns a vector $y\in\mathcal{P}_\delta(\rho)$, where
- \begin{equation*}
-  \mathcal{P}_\delta(\rho) = \bigg\{ y\in\R^m_{\geq 0} \, \Big| \, b^T y \leq \alpha, \Tr\Big(\sum_{j=1}^m y_j A_j - C \Big)\rho  \geq -\delta \bigg\}.
- \end{equation*}
- If $\mathcal{P}_0(\rho)=\emptyset$, then ORACLE returns ``fail''.
- 
- \vspace{2\floatsep}
- 
- \begin{lemma}[\cite{Arora2016}]
-  If $\mathcal{P}_0(\rho)$ is empty, then a suitably scaled version of $X=R\rho$ is primal-feasible with objective value $\geq \alpha$.
- \end{lemma}
-
- \vspace{\floatsep}
- 
- \structure{$\Rightarrow$ If construction fails, we still get a primal-feasible solution.}
- 
-
-\end{frame}
+% \begin{frame}{The $\oracle$}
+%  \structure{Recall:} $\oracle_\delta(\rho)$ returns a vector $y\in\mathcal{P}_\delta(\rho)$, where
+%  \begin{equation*}
+%   \mathcal{P}_\delta(\rho) = \bigg\{ y\in\R^m_{\geq 0} \, \Big| \, b^T y \leq \alpha, \Tr\Big(\sum_{j=1}^m y_j A_j - C \Big)\rho  \geq -\delta \bigg\}.
+%  \end{equation*}
+%  If $\mathcal{P}_0(\rho)=\emptyset$, then ORACLE returns ``fail''.
+%  
+%  \vspace{2\floatsep}
+%  
+%  \begin{lemma}[\cite{Arora2016}]
+%   If $\mathcal{P}_0(\rho)$ is empty, then a suitably scaled version of $X=R\rho$ is primal-feasible with objective value $\geq \alpha$.
+%  \end{lemma}
+% 
+%  \vspace{\floatsep}
+%  
+%  \structure{$\Rightarrow$ If construction fails, we still get a primal-feasible solution.}
+%  
+% 
+% \end{frame}
 
 \begin{frame}{The Arora-Kale Meta-Algorithm}
 
- Given error $\varepsilon>0$, set $T=\lceil 9 w^2 R^2 \ln(n) \varepsilon^{-2} \rceil$, $\eta=\sqrt{\ln(n)/T}$.
+
+Given error $\varepsilon>0$, set $T=\lceil 9 w^2 R^2 \ln(n) \varepsilon^{-2} \rceil$, $\eta=\sqrt{\ln(n)/T}$. 
+
+\pause
+
+\vspace{\floatsep}
+
+ \begin{algorithmic}
  
+ \State Set $\rho^{(1)}=I/n$.
+ 
+ \For{$t=1,\dots,T$}
+    \uncover<3->{
+      \State Let $y^{(t)} = \oracle_{\varepsilon/3R}(\rho^{(t)})$.
+  %     \If{$\oracle$ outputted ``fail''}
+  %       \State \Return ``Higher'' and $X^{(t)} = R\rho^{(t)}$.
+  %     \EndIf
+      \State Set \structure{$M^{(t)} = \frac{1}{w} \big( \sum_{j=1}^m y^{(t)}_j A_j - C \big)$}
+      \Comment{\structure{Adversary's response}}
+    }
+    \uncover<4->{
+      \State Set $H^{(t)} = \sum_{\tau=1}^t M^{(\tau)}$. 
+      \State Set \structure{$\rho^{(t+1)} = e^{-\eta H^{(t)}}/\Tr e^{-\eta H^{(t)}}$}.
+      \Comment{\structure{New Gibbs state}}
+    }
+ \EndFor
+ 
+ \uncover<5->{
+    \State \Return $\bar y = $\structure{$\frac{\varepsilon}{R} e_1$}$ + \frac{1}{T}\sum_{t=1}^T y^{(t)}$.
+    \Comment{\structure{psd correction}}
+ }
+  
+ \end{algorithmic}
+
  \vspace{\floatsep}
  
- Set $\rho^{(1)}=I/n$.
- 
- \vspace{0.25\floatsep}
- 
- \structure{for} $t=1,\dots,T$: \\[0.2\floatsep]
- \quad Let $y^{(t)} = \oracle_{\varepsilon/3R}(\rho^{(t)})$. \\[0.2\floatsep]
- \quad \structure{if} $\oracle$ outputted ``fail'': \\[0.2\floatsep]
- \quad \quad \structure{return} ``Higher'' and $X^{(t)} = R\rho^{(t)}$. \\[0.2\floatsep]
- \quad Set $M^{(t)} = \frac{1}{w} \big( \sum_{j=1}^m y^{(t)}_j A_j - C \big)$. \\[0.2\floatsep]
- \quad Set $H^{(t)} = \sum_{\tau=1}^t M^{(\tau)}$. \\[0.2\floatsep]
- \quad Set $\rho^{(t+1)} = e^{-\eta H^{(t)}}/\Tr e^{-\eta H^{(t)}}$ \\[0.2\floatsep]
- \structure{return} ``Lower'' and $\bar y = \frac{\varepsilon}{R} e_1 + \frac{1}{T}\sum_{t=1}^T y^{(t)}$.
-
- \vspace{2\floatsep}
- 
- No ``fail'' $\Rightarrow$ $\bar y$ is \structure{dual-feasible} with OPT value $b^T\bar{y} \leq \alpha + \varepsilon$.
- 
+ \uncover<6->{ 
+ No ``fail'' $\Rightarrow$ $\bar y$ is \structure{dual-feasible} with objective value
+ \begin{equation*}
+  b^T \bar{y} = \varepsilon + \frac{1}{T}\sum_{t=1}^T b^T y^{(t)} \leq \alpha + \varepsilon
+ \end{equation*}
+ } 
 \end{frame}
 
 
@@ -212,13 +270,13 @@ Since $A_1=I$, adding $wc$ to $\tilde{y}_1$ turns this matrix psd.
  
  \structure{Runtime} of Arora-Kale \structure{depends strongly} on the ORACLE via
  \begin{itemize}
-  \item its \structure{width} $w = \sup \| \sum_{j=1}^m y_j A_j - C  \|$:
+  \item<2-> its \structure{width} $w = \sup \| \sum_{j=1}^m y_j A_j - C  \|$:
   
     \vspace{0.25\floatsep}
   
     For a ORACLE with bounded output $\|y\|_1 \leq r$ we have $w \leq r + 1$.
   
-  \item its concrete \structure{implementation}:
+  \item<3-> its concrete \structure{implementation}:
   
    \vspace{0.5\floatsep}
    
@@ -226,7 +284,7 @@ Since $A_1=I$, adding $wc$ to $\tilde{y}_1$ turns this matrix psd.
    
    \vspace{0.5\floatsep}
    
-   Fast implementation should try to access inner products directly without computing $\rho \propto e^{-\eta H}$   
+   Fast implementation should try to access inner products directly without computing Gibbs state $\rho \propto e^{-\eta H}$   
   
  \end{itemize}
 
