@@ -23,16 +23,24 @@
  
  \begin{block}{Note:}
   The output is not binary, but the probability of a qubit being $0$.\\
-  \alert{This means we need to construct a quantum circuit, which turns the register $\ket{0\ldots 0}$ into one where the first qubit is as needed.}
+  \alert{$\Rightarrow$ We need to construct a quantum circuit, which turns a specific register (e.g. $\ket{0\ldots 0}$) into one where the first qubit is as needed.}
  \end{block} 
 \end{frame}
 
-\begin{frame}{The input of the Oracle: LP}
+\begin{frame}{The input of the Oracle: Linear programming}
+\begin{block}{LP as a special case of SDP}
+All matrices are diagonal matrices.
+\alert{Calculation of $\Tr(Ap)$ becomes much easier!}
+\end{block}
+
+TODO calculate classically -> transform into probability
 
 \end{frame}
 
 \begin{frame}{The input of the Oracle: SDP}
+TODO implement "functions of hamiltonians" for hermitian $H$: $f(H)=f(U Diag(\lambda_i) U^T)=U Diag(\tilde{f}(\lambda_i))U^T$
 
+Use this to calc $\sqrt{H}$, $e^{-H}$
 \end{frame}
 
 \subsection{The Oracle}
@@ -106,6 +114,115 @@ Define $G$ as the union of all $G_N$ with $0<N\leq r$.
 
 \begin{frame}{Understanding the area $G$}
 
+
+\begin{columns}
+\column{0.36\linewidth}
+
+\raggedleft
+\begin{tikzpicture}[scale=0.65]%[shift={(11cm,-1.5cm)}]
+\contourlength{0.5mm};
+
+\coordinate[label={[scale=0.5]below right: {$(\alpha/r,c/r)$}}] (ac) at (1,1/2);
+\coordinate[label={[scale=0.5]below right: {$N=\frac{r}{2}$}}]  (ac2) at (2,1);
+\coordinate													    (ac3) at (3,3/2);
+
+\fill[blue!30!white] (ac)--(ac -| -3,0)--(-3,3)--(ac3 |- 0,3)--(ac3)--cycle;
+
+\draw[thick] (-3,0)--(3,0);
+\draw[thick] (0, -3)--(0,3);
+\draw[dashed] (ac |- 0,3) -- (ac) -- (ac -| -3,0);
+\draw[dashed] (ac2 |- 0,3) -- (ac2) -- (ac2 -| -3,0);
+
+\filldraw (ac) circle(0.07);
+\filldraw (ac2) circle(0.05);
+
+\draw[->, thick] (ac)--(ac3);
+
+\node[scale=0.7,draw] at (1.5,-2) {$\alpha\geq 0, c\geq 0$};
+\draw (current bounding box.north east) rectangle (current bounding box.south west);
+\end{tikzpicture}
+
+
+\begin{tikzpicture}[scale=0.65]%[shift={(11cm,-1.5cm)}]
+\contourlength{0.5mm};
+
+\coordinate (ac) at (-1,1/2);
+\coordinate (ac2) at (-2,1);
+\coordinate	(ac3) at (-3,3/2);
+
+\fill[blue!30!white] (ac)--(ac -| -3,0)--(-3,3)--(ac |- 0,3)--cycle;
+
+\draw[thick] (-3,0)--(3,0);
+\draw[thick] (0, -3)--(0,3);
+\draw[dashed] (ac |- 0,3) -- (ac) -- (ac -| -3,0);
+\draw[dashed] (ac2 |- 0,3) -- (ac2) -- (ac2 -| -3,0);
+
+\filldraw (ac) circle(0.07);
+\filldraw (ac2) circle(0.05);
+
+\draw[->, thick] (ac)--(ac3);
+
+\node[scale=0.7,draw] at (1.5,-2) {$\alpha < 0, c\geq 0$};
+\draw (current bounding box.north east) rectangle (current bounding box.south west);
+\end{tikzpicture}
+\column{0.36\linewidth}
+
+\raggedright
+\begin{tikzpicture}[scale=0.65]%[shift={(11cm,-1.5cm)}]
+\contourlength{0.5mm};
+
+\coordinate (ac) at (1,-1/2);
+\coordinate (ac2) at (2,-1);
+\coordinate	(ac3) at (3,-3/2);
+
+\fill[blue!30!white] (-3,-3)--(-3,3)--(3,3)--(3,-3)--cycle;
+
+\draw[thick] (-3,0)--(3,0);
+\draw[thick] (0, -3)--(0,3);
+\draw[dashed] (ac |- 0,3) -- (ac) -- (ac -| -3,0);
+\draw[dashed] (ac2 |- 0,3) -- (ac2) -- (ac2 -| -3,0);
+
+\filldraw (ac) circle(0.07);
+\filldraw (ac2) circle(0.05);
+
+\draw[->, thick] (ac)--(ac3);
+
+\node[scale=0.7,draw, fill=white] at (1.5,-2) {$\alpha > 0, c < 0$};
+\draw (current bounding box.north east) rectangle (current bounding box.south west);
+\end{tikzpicture}
+
+
+\begin{tikzpicture}[scale=0.65]%[shift={(11cm,-1.5cm)}]
+\contourlength{0.5mm};
+
+\coordinate (ac) at (-1,-1/2);
+\coordinate (ac2) at (-2,-1);
+\coordinate	(ac3) at (-3,-3/2);
+
+\fill[blue!30!white] (ac)--(ac |- -3,3)--(-3,3)--(ac3)--cycle;
+
+\draw[thick] (-3,0)--(3,0);
+\draw[thick] (0, -3)--(0,3);
+\draw[dashed] (ac |- 0,3) -- (ac) -- (ac -| -3,0);
+\draw[dashed] (ac2 |- 0,3) -- (ac2) -- (ac2 -| -3,0);
+
+\filldraw (ac) circle(0.07);
+\filldraw (ac2) circle(0.05);
+
+\draw[->, thick] (ac)--(ac3);
+
+\node[scale=0.7,draw] at (1.5,-2) {$\alpha \leq 0, c < 0$};
+\draw (current bounding box.north east) rectangle (current bounding box.south west);
+\end{tikzpicture}
+
+\column{.28\textwidth}
+If $\alpha > 0, c < 0$, then is $G=\R^2$. 
+
+\vspace{1cm}
+Otherwise $G$ is the intersection of two half-planes.
+
+\end{columns}
+
 \end{frame}
 
 \begin{frame}{2-sparse solutions}
@@ -135,13 +252,15 @@ Define $G$ as the union of all $G_N$ with $0<N\leq r$.
 \begin{frame}{The algorithm}
 \begin{algorithmic}
 \If{$\alpha\geq 0$ and $c\leq 0$}
-	\Comment{$G$ is here all of $\R^2$}
+	\Comment{Check if $G=\R^2$}
     \State \Return $y=0$
     \pause
 \ElsIf{$\exists i: p_i\in G$}
+	\Comment{Check if a corner is in $G$}
     \State \Return $y=Ne_i$ with $N=c/a_i$
     \pause
 \Else
+	\Comment{Search a 2-sparse solution}
 	\State Find $j,k$ such that $\overline{p_j p_k}\cap G\neq \emptyset$
 	\If{Such $j,k$ exist}
 		\State Calculate a fitting convex combination $q$ and scalar $N$
