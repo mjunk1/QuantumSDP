@@ -7,7 +7,7 @@
 \begin{columns}
  \column{0.6\linewidth}
     \begin{block}{Quantum register}
-    $N$-qubit states $\ket{q_1,\dots,q_N}\in\C^{2^N}$
+    $N$-qubit states $\ket\psi\in(\C^2)^{\otimes N}.$
     \end{block}
     
     \vspace{\floatsep}
@@ -34,28 +34,35 @@
 
 \end{frame}
 
-% \begin{frame}{Quantum Speed-Up}
-%  
-%  \structure{Hope/Expectation:} Many problems can be solved faster on a quantum computer.
-%  
-%  \begin{columns}
-%   \column{0.5\linewidth}
-%   \structure{Evidence:} \Eg~Shor's algorithm
-%   
-%   \column{0.5\linewidth}
-%     \begin{figure}
-%      \centering
-%      \includegraphics[width=\linewidth]{gfx/BQP_complexity_class_diagram}
-%      \caption{\footnotesize Wikipedia/BQP}
-%     \end{figure}
-%  \end{columns}
-%  
-% \end{frame}
+\begin{frame}{Quantum Algorithms}
+ 
+ \structure{Hope/Expectation:} Many problems can be solved faster on a quantum computer.
+ 
+ 
+ \begin{columns}
+  \column{0.6\linewidth}
+  \visible<2->{\structure{Evidence:}}
+  \begin{itemize}
+   \item<2-> Grover search
+   \item<3-> Quantum Fourier Transform
+   \item<3-> Shor's factorisation / discrete log 
+   \item<4-> Topological Quantum Field Theory
+   \item<4-> \dots
+  \end{itemize}
+  
 
-% \begin{frame}{Quantum Algorithms}
-% 
-% \structure{Examples:} Grover search algorithm, Shor's factoring algorithm, \dots
-% 
-% \alert{But: This list is not that long!}
-%  
-% \end{frame}
+  \column{0.4\linewidth}
+    \begin{figure}
+     \centering
+     \includegraphics[width=\linewidth]{gfx/BQP_complexity_class_diagram}
+     \caption{\footnotesize Wikipedia/BQP}
+    \end{figure}
+ \end{columns}
+ 
+ \begin{center}
+  \visible<5->{\alert{Number of quantum algorithms is very limited}}
+ \end{center}
+
+ 
+\end{frame}
+

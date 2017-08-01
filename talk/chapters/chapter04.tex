@@ -1,0 +1,43 @@
+% ************************************
+\section{Limitations}
+% ************************************
+
+\begin{frame}{Limitations}
+ 
+ \structure{General oracles are slow}
+ \begin{itemize}
+  \item Sparse oracles have necessarily a large width for $l$-sparse problems $\Rightarrow$ For the previous oracle: runtime $\Omega( l^4 \sqrt{nm} s^2)$
+  \item General width bounds can lead to bad runtimes 
+ \end{itemize}
+ \structure{$\Rightarrow$ Adapt to specific SDPs using quantum oracles}
+ 
+ \vspace{2\floatsep}
+ 
+ \structure{Worse scaling}
+ \begin{itemize}
+  \item Speed-up in $nm$ but worse scaling in  $Rr/\varepsilon$
+  \item No known SDP examples with $nm \gg  Rr/\varepsilon$ \dots
+ \end{itemize}
+
+
+\end{frame}
+
+\begin{frame}{Conclusions}
+
+\begin{itemize}
+ \item Quantum algorithm with a completely new application
+ \item Quadratic speed-up in dimensions
+ \item \dots but worse scaling in other parameters
+\end{itemize}
+
+\vspace{\floatsep}
+
+Hopefully, this stimulates 
+\begin{itemize}
+ \item Further evolution on quantum SDP algorithms with better bounds
+ \item Development of new quantum algorithms
+\end{itemize}
+
+
+
+\end{frame}
