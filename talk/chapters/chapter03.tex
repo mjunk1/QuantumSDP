@@ -5,7 +5,7 @@
 
 \begin{frame}{The Quantum Speed-Ups}
  \begin{block}{Calculating the input of the Oracle:}
-  Estimate $\Tr(Ap)$ for a hermitian matrix $A$ and a density operator $p$.
+  Estimate $\Tr(A\rho)$ for a hermitian matrix $A$ and a density operator $\rho$.
  \end{block}
  
  \begin{block}{A fast implementation of the Oracle:}
@@ -18,7 +18,7 @@
 \begin{frame}{First Speed-Up: Input of the Oracle}
  \begin{block}{Problem:}
   \textbf{Input:} Hermitian matrices $A,H$ \\
-  \textbf{Output:} Approximation of $\Tr(Ap)$ with $p=\frac{e^{-H}}{\Tr(e^{-H})}$
+  \textbf{Output:} Approximation of $\Tr(A\rho)$ with $\rho=\frac{e^{-H}}{\Tr(e^{-H})}$
  \end{block}
  
  \begin{block}{Note:}
@@ -29,18 +29,67 @@
 
 \begin{frame}{The input of the Oracle: Linear programming}
 \begin{block}{LP as a special case of SDP}
-All matrices are diagonal matrices.
-\alert{Calculation of $\Tr(Ap)$ becomes much easier!}
+All matrices are diagonal matrices.\\
+\alert{Calculation of $\Tr(Ae^{-H})$ becomes much easier:}
+
+\begin{equation*}
+\Tr(Ae^{-H})=\sum_{i=1}^n a_{ii}e^{-h_{ii}}
+\end{equation*}
+
 \end{block}
 
-TODO calculate classically -> transform into probability
+\vspace{1cm}
+
+\textbf{Idea:} Calculate it classically, then transform it into a state of a qubit
+
+\end{frame}
+
+\begin{frame}{Transforming a binary value into a qubit state}
+Let $b\in [0,1]$ be the value we want as the probability of a qubit being 0
+\begin{itemize}
+\item calculate a binary approximation $b_0.b_1b_2b_3\ldots b_t$ of $\beta=\arcsin(\sqrt{b})/\pi$
+\item start with the register $\ket{1}\ket{\beta}=\ket{1}\ket{b_0}\ket{b_1}\ldots\ket{b_t}$
+\item apply $t$ controlled rotations to the first qubit, rotating by $\pi 2^{-j}$ towards $\ket{0}$ if $b_j=1$
+\end{itemize}
+Afterwards our register is: 
+\begin{align*}
+&\left(\sin\left(\sum_{b_i=1} \pi 2^{-i}\right)\ket{0}
++\cos\left(\sum_{b_i=1} \pi 2^{-i}\right)\ket{1}\right)
+ \ket{\beta}\\
+=&\left(\sin\left(\pi\beta\right)\ket{0}
++\cos\left(\pi\beta\right)\ket{1}\right)
+ \ket{\beta}\\
+=&(\sqrt{b}\ket{0}+\sqrt{1-b}\ket{1})\ket{\beta}
+\end{align*}
+For which the probability, that the first qubit is 0, is exactly $\|\sqrt{b}\ket{0}\|^2=b$.
+\end{frame}
+
+\begin{frame}{Further optimization}
+TODO: Delete this page\\
+Not completely clear.  Can we apply an arithmetic circuit for all $i$ of 
+\begin{equation*}
+\frac{1}{\sqrt{n}}\sum_{i=1}^n\ket{i}\ket{H_{ii}}\ket{A_{ii}}
+\end{equation*}
+at the same time to get
+\begin{equation*}
+\frac{1}{\sqrt{n}}\sum_{i=1}^n\ket{i}\ket{H_{ii}}\ket{A_{ii}}\ket{\beta_i}
+\end{equation*}
+($\beta_i=a_{ii}e^{h_{ii}}$)
+if so then doing this, then applying the transformation for all i in parallel would be faster then calculating $\beta$ directly. (Summing is free)
 
 \end{frame}
 
 \begin{frame}{The input of the Oracle: SDP}
-TODO implement "functions of hamiltonians" for hermitian $H$: $f(H)=f(U Diag(\lambda_i) U^T)=U Diag(\tilde{f}(\lambda_i))U^T$
 
-Use this to calc $\sqrt{H}$, $e^{-H}$
+\textbf{Idea: } Construct circuits to calculate $\sqrt{A}$ and $\sqrt{e^{-H}}=e^{-H/2}$ seperately, then apply them to a maximally entangled state to get the Trace. (TODO: details?). 
+
+\begin{block}{How do we construct these circuits?}
+$\sqrt{H}$ and $e^{H}$ are functions of hamiltonians:
+\begin{equation*}
+f(H)=f(U \mathrm{Diag}(\lambda_1,\ldots, \lambda_n) U^T)=U \mathrm{Diag}(\tilde{f}(\lambda_1),\ldots,\tilde{f}(\lambda_n))U^T
+\end{equation*}
+Use a fourier series to approximate a polynomial approximation of $\tilde{f}$. Fourier series can be implemented efficiently using quantum computers. This can then be extended to apply to hermitian matrices.
+\end{block}
 \end{frame}
 
 \subsection{The Oracle}
@@ -51,9 +100,9 @@ Use this to calc $\sqrt{H}$, $e^{-H}$
 \begin{align*}
 \alpha&\in\R\\
 r&\in \R_{\geq 0}\\
-a&\in \R^m \text{ with } a_j\approx \Tr(A_j p)\\
+a&\in \R^m \text{ with } a_j\approx \Tr(A_j \rho)\\
 b&\in \R^m\\
-c&\approx \Tr(Cp)-\varepsilon
+c&\approx \Tr(C\rho)-\varepsilon
 \end{align*}
 \textbf{Output: } $y\in \mathbb{R}^m$ with:
 %TODO Fix spacing
@@ -335,7 +384,59 @@ If we implement the functions $i\to\sphericalangle p_i L_1$ and $i\to \spherical
 
 %Chapter 4?
 \subsection{Runtime of the SDP solver}
+\begin{frame}{Runtime of the algorithm}
+\begin{itemize}
+\item calculating $\Tr(A_j\rho)$ during iteration $t$:
+\begin{equation*}
+\tilde{\mathcal{O}}\left(\sqrt{n}s^2\frac{\eta t^3 Rr}{\varepsilon}\right)
+\end{equation*}
+\pause
+\item one iteration: $\tilde{\mathcal{O}}(\sqrt{m})$ uses of $\Tr(A_j\rho)$ in the Oracle:
+\begin{equation*}
+\tilde{\mathcal{O}}\left(\sqrt{nm}s^2\frac{\eta t^3 Rr}{\varepsilon}\right)
+\end{equation*}
+\pause
+\end{itemize}
+\end{frame}
 
-\subsection{Downsides}
+\begin{frame}{Runtime of the algorithm}
+Number of iterations $T=\tilde{\mathcal{O}}\left(\frac{R^2 r^2}{\varepsilon^2}\right)$, $\eta=\sqrt{\frac{\ln(n)}{T}}$
 
-\subsection{Conclusions}
+\vspace{1cm} 
+
+Total runtime for SDP:
+
+\begin{align*}
+\tilde{\mathcal{O}}\left(\sum_{t=1}^T \sqrt{nm}s^2\frac{\eta t^3 Rr}{\varepsilon}\right)&=\tilde{\mathcal{O}}\left(\sqrt{nm}s^2\frac{\eta T^4 Rr}{\varepsilon}\right)\\
+&=\tilde{\mathcal{O}}\left(\sqrt{nm}s^2\left(\frac{Rr}{\varepsilon}\right)^8\right)
+\end{align*}
+
+\end{frame}
+
+\begin{frame}{Runtime of the algorithm: LP}
+Diagonal matrices have sparsity $s=1$, and we can use the LP case for calculating $\Tr(A_j\rho)$.
+
+\vspace{1cm} 
+
+Total runtime for LP:
+
+\begin{align*}
+\tilde{\mathcal{O}}\left(\sqrt{nm}\left(\frac{Rr}{\varepsilon}\right)^5\right)
+\end{align*}
+
+\end{frame}
+
+\begin{frame}{Comparing quantum with classical runtimes}
+Best known classical general SDP-solver:
+\begin{equation*}
+\tilde{\mathcal{O}}(m(m^2+n^\omega+mns)) \text{ with } \omega\in[2,2.373)
+\end{equation*}
+
+\vspace{1cm}
+
+This quantum SDP-solver:
+\begin{equation*}
+\tilde{\mathcal{O}}\left(\sqrt{nm}s^2\left(\frac{Rr}{\varepsilon}\right)^8\right)
+\end{equation*}
+
+\end{frame}
