@@ -427,16 +427,23 @@ Total runtime for LP:
 \end{frame}
 
 \begin{frame}{Comparing quantum with classical runtimes}
-Best known classical general SDP-solver:
+Best known \structure{classical general SDP-solver}:
 \begin{equation*}
 \tilde{\mathcal{O}}(m(m^2+n^\omega+mns)) \text{ with } \omega\in[2,2.373)
 \end{equation*}
 
-\vspace{1cm}
+\vspace{\floatsep}
 
-This quantum SDP-solver:
+This \structure{quantum SDP solver}:
 \begin{equation*}
 \tilde{\mathcal{O}}\left(\sqrt{nm}s^2\left(\frac{Rr}{\varepsilon}\right)^8\right)
+\end{equation*}
+
+\vspace{\floatsep}
+
+\structure{Arora-Kale with \emph{classical} ORACLE}:
+\begin{equation*}
+ \tilde{\mathcal{O}}\left(nms \left(\frac{Rr}{\varepsilon}\right)^4 + ns \left(\frac{Rr}{\varepsilon}\right)^7 \right).
 \end{equation*}
 
 \end{frame}
