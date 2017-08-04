@@ -22,7 +22,7 @@
  \end{block}
  
  \begin{block}{Note:}
-  The output is not binary, but the probability of a qubit being $0$.\\
+  The output is the probability of a qubit being $0$.\\
   \alert{$\Rightarrow$ We need to construct a quantum circuit, which turns a specific register (e.g. $\ket{0\ldots 0}$) into one where the first qubit is as needed.}
  \end{block} 
 \end{frame}
@@ -40,11 +40,11 @@ All matrices are diagonal matrices.\\
 
 \vspace{1cm}
 
-\textbf{Idea:} Calculate it classically, then transform it into a state of a qubit
+\textbf{Idea:} Calculate it classically, then transform it into the amplitude of the first qubit
 
 \end{frame}
 
-\begin{frame}{Transforming a binary value into a qubit state}
+\begin{frame}{Transforming a binary value into a qubit amplitude}
 Let $b\in [0,1]$ be the value we want as the probability of a qubit being 0
 \begin{itemize}
 \item calculate a binary approximation $b_0.b_1b_2b_3\ldots b_t$ of $\beta=\arcsin(\sqrt{b})/\pi$
