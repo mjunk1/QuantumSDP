@@ -40,11 +40,11 @@
 
 %Binary->amplitude
 \begin{frame}{Transforming a binary value into a qubit amplitude}
-Let $b\in [0,1]$ be the value we want as the probability of a qubit being 0
+Let $b\in [0,1]$ be the value we want as the \structure{probability} of a qubit being 0
 \begin{itemize}
-\item calculate a binary approximation $b_0.b_1b_2b_3\ldots b_t$ of $\beta=\arcsin(\sqrt{b})/\pi$
+\item calculate a \structure{binary approximation} $b_0.b_1b_2b_3\ldots b_t$ of $\beta=\arcsin(\sqrt{b})/\pi$
 \item start with the register $\ket{1}\ket{\beta}=\ket{1}\ket{b_0}\ket{b_1}\ldots\ket{b_t}$
-\item apply $t$ controlled rotations to the first qubit, rotating by $\pi 2^{-j}$ towards $\ket{0}$ if $b_j=1$
+\item apply $t$ \structure{controlled rotations} to the first qubit, rotating by $\pi 2^{-j}$ towards $\ket{0}$ if $b_j=1$
 \end{itemize}
 Afterwards our register is: 
 \begin{align*}
@@ -54,7 +54,7 @@ Afterwards our register is:
 =&\left(\sin\left(\pi\beta\right)\ket{0}
 +\cos\left(\pi\beta\right)\ket{1}\right)
  \ket{\beta}\\
-=&(\sqrt{b}\ket{0}+\sqrt{1-b}\ket{1})\ket{\beta}
+=&(\structure{\sqrt{b}}\ket{0}+\sqrt{1-b}\ket{1})\ket{\beta}
 \end{align*}
 For which the probability, that the first qubit is 0, is exactly $\|\sqrt{b}\ket{0}\|^2=b$.
 \end{frame}

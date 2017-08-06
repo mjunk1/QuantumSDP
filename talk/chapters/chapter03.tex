@@ -22,7 +22,7 @@
  \end{block}
  
  \begin{block}{Note:}
-  The output is the probability of a qubit being $0$.\\
+  The output is the \structure{probability} of a qubit being $0$.\\
   \alert{$\Rightarrow$ We need to construct a quantum circuit, which turns a specific register (e.g. $\ket{0\ldots 0}$) into one where the first qubit is as needed.}
  \end{block} 
 \end{frame}
@@ -40,24 +40,24 @@ All matrices are diagonal matrices.\\
 
 \vspace{1cm}
 
-\textbf{Idea:} Calculate a binary approximation using arithmetic circuits first, then transform the first qubit accordingly.
+\structure{Idea:} Calculate a binary approximation using \structure{arithmetic circuits} first, then \structure{transform} the first qubit accordingly.
 
 \end{frame}
 
 \begin{frame}{The input of the Oracle: Linear programming}
-We start by applying Hadamard gates to $\ket{0\ldots 0}$ to get the state:
+We start by applying Hadamard gates to \structure{$\ket{0\ldots 0}$} to get the state:
 \begin{equation*}
-\frac{1}{\sqrt{n}}\sum_{i=1}^n\ket{i}
+\structure{\frac{1}{\sqrt{n}}\sum_{i=1}^n\ket{i}}
 \end{equation*}
 \pause
 To this we apply the input oracles $O_H\ket{i}\ket{z}=\ket{i}\ket{z\oplus H_{ii}}$ to get
 \begin{equation*}
-\frac{1}{\sqrt{n}}\sum_{i=1}^n\ket{i}\ket{H_{ii}}\ket{A_{ii}}
+\frac{1}{\sqrt{n}}\sum_{i=1}^n\ket{i}\structure{\ket{H_{ii}}\ket{A_{ii}}}
 \end{equation*}
 \pause
-Now we can apply an arithmetic circuit to calculate
+Now we can apply an \structure{arithmetic circuit} to calculate
 \begin{equation*}
-\frac{1}{\sqrt{n}}\sum_{i=1}^n\ket{i}\ket{H_{ii}}\ket{A_{ii}}\ket{\beta_i}
+\frac{1}{\sqrt{n}}\sum_{i=1}^n\ket{i}\ket{H_{ii}}\ket{A_{ii}}\structure{\ket{\beta_i}}
 \end{equation*}
 with $\beta_i\approx\arcsin\left(\sqrt{A_{ii}e^{-H_{ii}}}\right)/\pi$.
 
@@ -70,14 +70,14 @@ with $\beta_i\approx\arcsin\left(\sqrt{A_{ii}e^{-H_{ii}}}\right)/\pi$.
 
 \vspace{1cm}
 
-Now we can apply the Transformation 
+Now we can apply the \structure{transformation}
 \begin{equation*}
 \ket{1}\ket{\beta}\to (\sin(\pi\beta)\ket{0}+\cos(\pi\beta)\ket{1})\ket{\beta}
 \end{equation*}
-on an ancilla qubit:
+to an ancilla qubit:
 
 \begin{equation*}
-\frac{1}{\sqrt{n}}\sum_{i=1}^n\left(\sqrt{A_{ii}e^{-H_{ii}}}\ket{0}+\sqrt{1-A_{ii}e^{-H_{ii}}}\ket{1}\right)\ket{i}\ket{H_{ii}}\ket{A_{ii}}\ket{\beta_i}
+\frac{1}{\sqrt{n}}\sum_{i=1}^n\structure{\left(\sqrt{A_{ii}e^{-H_{ii}}}\ket{0}+\sqrt{1-A_{ii}e^{-H_{ii}}}\ket{1}\right)}\ket{i}\ket{H_{ii}}\ket{A_{ii}}\ket{\beta_i}
 \end{equation*}
 \end{frame}
 
@@ -86,7 +86,7 @@ on an ancilla qubit:
 \frac{1}{\sqrt{n}}\sum_{i=1}^n\left(\sqrt{A_{ii}e^{-H_{ii}}}\ket{0}+\sqrt{1-A_{ii}e^{-H_{ii}}}\ket{1}\right)\ket{i}\ket{H_{ii}}\ket{A_{ii}}\ket{\beta_i}
 \end{equation*}
 
-The probability that this state's first qubit is 0 is:
+The \structure{probability} that this state's first qubit is 0 is:
 \begin{equation*}
 \left\|\frac{1}{\sqrt{n}}\sum_{i=1}^n\sqrt{A_{ii}e^{-H_{ii}}}\ket{i}\right\|^2=\frac{1}{n}\sum_{i=1}^n A_{ii}e^{-H_{ii}}=\frac{1}{n}\Tr(Ae^{-H})
 \end{equation*}
@@ -94,14 +94,15 @@ The probability that this state's first qubit is 0 is:
 
 \begin{frame}{The input of the Oracle: SDP}
 
-\textbf{Idea: } Construct circuits for $\sqrt{A}$ and $\sqrt{e^{-H}}=e^{-H/2}$, then apply them to a superposition of an orthonormal basis.
+\structure{Idea: } Construct circuits for $\sqrt{A}$ and $\sqrt{e^{-H}}=e^{-H/2}$, then apply them to a superposition of the base states.
 
 \begin{block}{Problem: These matrices are not unitary}
 Instead we construct for the norm-decreasing maps $B=\sqrt{A}$ and $e^{-H/2}$ circuits with
 \begin{equation*}
 U_B\ket{0}\ket{i}=\ket{0}B\ket{i}+\ket{1}*
 \end{equation*}
-We can apply both Operations to the same $\ket{i}$ by using different ancilla qubits for each operation:
+\pause
+We can apply both operations to the same $\ket{i}$ by using different ancilla qubits for each operation:
 \begin{align*}
 U_{\sqrt{A}}&U_{e^{-H/2}}\ket{0}\ket{0}\ket{i}\\
 &=U_{\sqrt{A}}(\ket{0}\ket{0}e^{-H/2}\ket{i}+\ket{0}\ket{1}*)\\
@@ -112,7 +113,7 @@ U_{\sqrt{A}}&U_{e^{-H/2}}\ket{0}\ket{0}\ket{i}\\
 \end{frame}
 
 \begin{frame}{The input of the Oracle: SDP}
-When we now apply this circuit to $\ket{0}\ket{0}\sum_{i=1}^n \frac{\ket{i}\ket{i}}{\sqrt{n}}$ the probability that the first two qubits are zero is
+When we now apply this circuit to $\ket{0}\ket{0}\sum_{i=1}^n \frac{\ket{i}\ket{i}}{\sqrt{n}}$, then is the probability that the first two qubits are zero
 \begin{align*}
 &\left\|\sum_{i=1}^n\frac{\left(\sqrt{A}e^{-H/2}\ket{i}\right)\ket{i}}{\sqrt{n}}\right\|^2\\
 =&\frac{1}{n}\sum_{i=1}^n \bra{i}\left(e^{-H/2}\right)^T\sqrt{A}^T\sqrt{A}e^{-H/2}\ket{i}\\
@@ -138,23 +139,17 @@ $\to$ Extension to apply to hermitian matrices
 
 %TODO Layout
 \begin{frame}{The Oracle: Problem definition}
-\textbf{Input: }
-\begin{align*}
-\alpha&\in\R\\
-r&\in \R_{\geq 0}\\
-a&\in \R^m \text{ with } a_j\approx \Tr(A_j \rho)\\
-b&\in \R^m\\
-c&\approx \Tr(C\rho)-\varepsilon
-\end{align*}
-\textbf{Output: } $y\in \mathbb{R}^m$ with:
+\structure{Input: } $\alpha\in\R$, $r\in \R_{\geq 0}$, $a\in \R^m$ with $a_j\approx \Tr(A_j \rho)$, $b\in \R^m$, $c\approx \Tr(C\rho)-\varepsilon$\\
+\vspace{1cm}
+\structure{Output: } $y\in \mathbb{R}^m$ with:
 %TODO Fix spacing
 % \begin{columns}
 % \column{0.5\linewidth}
 \begin{align*}
-\|y\|_1&\leq r && \text{\structure{Compared to the dual SDP}}\\
-b^T y&\leq \alpha&&\min \quad b^T y\\
-a^T y&\geq c&&\text{s.t. } \quad \sum_{j=1}^m y_j A_j - C\succeq 0\\
-y&\geq 0 && \qquad y\geq 0
+\|y\|_1&\leq r & \omit\rlap{\structure{Compared to the dual SDP}}\\
+b^T y&\leq \alpha&\min \quad &b^T y\\
+a^T y&\geq c& \text{s.t. } &\sum_{j=1}^m y_j A_j - C\succeq 0\\
+y&\geq 0 & &y\geq 0
 \end{align*}
 % \column{0.5\linewidth}
 % \begin{block}{Compared to the dual SDP:}
@@ -169,7 +164,7 @@ y&\geq 0 && \qquad y\geq 0
 \end{frame}
 
 \begin{frame}{Simplifying the problem}
-Substituting $y=Nq$ with $N=\|y\|_1$ and $\|q\|_1=1$ results in:
+Substituting \structure{$y=Nq$} with $N=\|y\|_1$ and $\|q\|_1=1$ results in:
 
 %Some ugly magic for rcases inside of align
 \begin{equation*}
@@ -184,7 +179,7 @@ Substituting $y=Nq$ with $N=\|y\|_1$ and $\|q\|_1=1$ results in:
   \begin{rcases*}
    =1\\
    \geq 0
-  \end{rcases*} \text{convex combination coefficients}  \\
+  \end{rcases*} \text{\structure{convex combination} coefficients}  \\
   0&<N\leq r
  \end{split}
 \end{equation*}
@@ -192,8 +187,7 @@ Substituting $y=Nq$ with $N=\|y\|_1$ and $\|q\|_1=1$ results in:
 
 \begin{frame}{Simplifying the problem}
 \begin{block}{Problem: two-dimensional interpretation}
-Find the convex combination of a point $P\in\mathrm{conv}\{p_i=(b_i,a_i)\}$,\\
-which lies to the upper left of $(\alpha/N, c/N)$ for an $0<N\leq r$.
+Find the \structure{convex combination} of a point $P\in\mathrm{conv}\{p_i=(b_i,a_i)\}$, which lies to the \structure{upper left} of $(\alpha/N, c/N)$ for an $0<N\leq r$.
 \end{block}
 
 \vspace{1cm}
@@ -328,8 +322,8 @@ Otherwise $G$ is the intersection of two half-planes.
 \filldraw (2.5,0.5) circle(0.07) node[anchor=south east]{\contour{white}{$P$}};
 \filldraw (3,0) circle(0.07) node[anchor=north west]{\contour{white}{$(\alpha/N,c/N)$}};
 \node[text width=5cm] at (9,0) 
-	{If there is no $p_i\in G_N$\\
-	but there is a $P\in G_N\cap Q$\\
+	{If there is no $p_i\in G_N$,\\
+	but there is a $P\in G_N\cap Q$,\\
 	then $\partial Q\cap G_N\neq \emptyset$.\\ 
 	\vspace{0.5cm}
 	In particular, there is a line with $\overline{p_i p_j}\cap G_N\neq\emptyset$.\\
@@ -343,15 +337,15 @@ Otherwise $G$ is the intersection of two half-planes.
 \begin{frame}{The algorithm}
 \begin{algorithmic}
 \If{$\alpha\geq 0$ and $c\leq 0$}
-	\Comment{Check if $G=\R^2$}
+	\Comment{Check if \structure{$G=\R^2$}}
     \State \Return $y=0$
     \pause
 \ElsIf{$\exists i: p_i\in G$}
-	\Comment{Check if a corner is in $G$}
+	\Comment{Check if a \structure{corner} is in $G$}
     \State \Return $y=Ne_i$ with $N=c/a_i$
     \pause
 \Else
-	\Comment{Search a 2-sparse solution}
+	\Comment{Search a \structure{2-sparse} solution}
 	\State Find $j,k$ such that $\overline{p_j p_k}\cap G\neq \emptyset$
 	\If{Such $j,k$ exist}
 		\State Calculate a fitting convex combination $q$ and scalar $N$
@@ -404,7 +398,7 @@ Otherwise $G$ is the intersection of two half-planes.
 \node[text width=5.5cm] at (8,1) 
 	{The angle $\sphericalangle L_1 L_2$ is constant.\\
 	\vspace{0.5cm}
-	The line $\overline{p_j p_k}$ crosses $G$ if and only if\\
+	The line $\overline{p_j p_k}$ crosses $G$ if and only if:\\
 	$\sphericalangle p_j L_1+\sphericalangle L_1 L_2
 	    +\sphericalangle L_2 p_k\leq \pi$\\
 	\vspace{0.5cm}
@@ -415,12 +409,12 @@ Otherwise $G$ is the intersection of two half-planes.
 
 \begin{frame}{Where is the quantum speed-up?}
 \begin{block}{Step 2: Check if there is a $p_i\in G$}
-If we implement the function $i\to$"Is $p_i\in G$?" as a quantum circuit, then Grover search can be used to find such a $p_i$ in $\mathcal{O}(\sqrt{m})$.
+If we implement the function $i\to$"Is $p_i\in G$?" as a quantum circuit, then \structure{Grover search} can be used to find such a $p_i$ in $\mathcal{O}(\sqrt{m})$.
 \end{block}
 
 \begin{block}{Step 3: Minimize the angles $\sphericalangle p_j L_1$ and 
 		$\sphericalangle L_2 p_k$}
-If we implement the functions $i\to\sphericalangle p_i L_1$ and $i\to \sphericalangle L_2 p_k$ as quantum circuits, then the quantum minimum-finding algorithm of Dürr and Høyer can be used to minimize them in $\mathcal{O}(\sqrt{m})$.
+If we implement the functions $i\to\sphericalangle p_i L_1$ and $i\to \sphericalangle L_2 p_k$ as quantum circuits, then the \structure{quantum minimum-finding} algorithm of \structure{Dürr and Høyer} can be used to minimize them in $\mathcal{O}(\sqrt{m})$.
 \end{block}
 \end{frame}
 
@@ -428,16 +422,15 @@ If we implement the functions $i\to\sphericalangle p_i L_1$ and $i\to \spherical
 \subsection{Runtime of the SDP solver}
 \begin{frame}{Runtime of the algorithm}
 \begin{itemize}
-\item calculating $\Tr(A_j\rho)$ during iteration $t$:
+\item calculating \structure{$\Tr(A_j\rho)$} during iteration $t$:
 \begin{equation*}
 \tilde{\mathcal{O}}\left(\sqrt{n}s^2\frac{\eta t^3 Rr}{\varepsilon}\right)
 \end{equation*}
 \pause
-\item one iteration: $\tilde{\mathcal{O}}(\sqrt{m})$ uses of $\Tr(A_j\rho)$ in the Oracle:
+\item \structure{one iteration}: $\tilde{\mathcal{O}}(\sqrt{m})$ uses of $\Tr(A_j\rho)$ in the Oracle:
 \begin{equation*}
 \tilde{\mathcal{O}}\left(\sqrt{nm}s^2\frac{\eta t^3 Rr}{\varepsilon}\right)
 \end{equation*}
-\pause
 \end{itemize}
 \end{frame}
 
@@ -446,7 +439,7 @@ Number of iterations $T=\tilde{\mathcal{O}}\left(\frac{R^2 r^2}{\varepsilon^2}\r
 
 \vspace{1cm} 
 
-Total runtime for SDP:
+\structure{Total runtime for SDP}:
 
 \begin{align*}
 \tilde{\mathcal{O}}\left(\sum_{t=1}^T \sqrt{nm}s^2\frac{\eta t^3 Rr}{\varepsilon}\right)&=\tilde{\mathcal{O}}\left(\sqrt{nm}s^2\frac{\eta T^4 Rr}{\varepsilon}\right)\\
@@ -460,7 +453,7 @@ Diagonal matrices have sparsity $s=1$, and we can use the LP case for calculatin
 
 \vspace{1cm} 
 
-Total runtime for LP:
+\structure{Total runtime for LP}:
 
 \begin{align*}
 \tilde{\mathcal{O}}\left(\sqrt{nm}\left(\frac{Rr}{\varepsilon}\right)^5\right)
