@@ -33,62 +33,104 @@ All matrices are diagonal matrices.\\
 \alert{Calculation of $\Tr(Ae^{-H})$ becomes much easier:}
 
 \begin{equation*}
-\Tr(Ae^{-H})=\sum_{i=1}^n a_{ii}e^{-h_{ii}}
+\Tr(Ae^{-H})=\sum_{i=1}^n A_{ii}e^{-H_{ii}}
 \end{equation*}
 
 \end{block}
 
 \vspace{1cm}
 
-\textbf{Idea:} Calculate it classically, then transform it into the amplitude of the first qubit
+\textbf{Idea:} Calculate a binary approximation using arithmetic circuits first, then transform the first qubit accordingly.
 
 \end{frame}
 
-\begin{frame}{Transforming a binary value into a qubit amplitude}
-Let $b\in [0,1]$ be the value we want as the probability of a qubit being 0
-\begin{itemize}
-\item calculate a binary approximation $b_0.b_1b_2b_3\ldots b_t$ of $\beta=\arcsin(\sqrt{b})/\pi$
-\item start with the register $\ket{1}\ket{\beta}=\ket{1}\ket{b_0}\ket{b_1}\ldots\ket{b_t}$
-\item apply $t$ controlled rotations to the first qubit, rotating by $\pi 2^{-j}$ towards $\ket{0}$ if $b_j=1$
-\end{itemize}
-Afterwards our register is: 
-\begin{align*}
-&\left(\sin\left(\sum_{b_i=1} \pi 2^{-i}\right)\ket{0}
-+\cos\left(\sum_{b_i=1} \pi 2^{-i}\right)\ket{1}\right)
- \ket{\beta}\\
-=&\left(\sin\left(\pi\beta\right)\ket{0}
-+\cos\left(\pi\beta\right)\ket{1}\right)
- \ket{\beta}\\
-=&(\sqrt{b}\ket{0}+\sqrt{1-b}\ket{1})\ket{\beta}
-\end{align*}
-For which the probability, that the first qubit is 0, is exactly $\|\sqrt{b}\ket{0}\|^2=b$.
-\end{frame}
-
-\begin{frame}{Further optimization}
-TODO: Delete this page\\
-Not completely clear.  Can we apply an arithmetic circuit for all $i$ of 
+\begin{frame}{The input of the Oracle: Linear programming}
+We start by applying Hadamard gates to $\ket{0\ldots 0}$ to get the state:
+\begin{equation*}
+\frac{1}{\sqrt{n}}\sum_{i=1}^n\ket{i}
+\end{equation*}
+\pause
+To this we apply the input oracles $O_H\ket{i}\ket{z}=\ket{i}\ket{z\oplus H_{ii}}$ to get
 \begin{equation*}
 \frac{1}{\sqrt{n}}\sum_{i=1}^n\ket{i}\ket{H_{ii}}\ket{A_{ii}}
 \end{equation*}
-at the same time to get
+\pause
+Now we can apply an arithmetic circuit to calculate
 \begin{equation*}
 \frac{1}{\sqrt{n}}\sum_{i=1}^n\ket{i}\ket{H_{ii}}\ket{A_{ii}}\ket{\beta_i}
 \end{equation*}
-($\beta_i=a_{ii}e^{h_{ii}}$)
-if so then doing this, then applying the transformation for all i in parallel would be faster then calculating $\beta$ directly. (Summing is free)
+with $\beta_i\approx\arcsin\left(\sqrt{A_{ii}e^{-H_{ii}}}\right)/\pi$.
 
+\end{frame}
+
+\begin{frame}{The input of the Oracle: Linear programming}
+\begin{equation*}
+\frac{1}{\sqrt{n}}\sum_{i=1}^n\ket{i}\ket{H_{ii}}\ket{A_{ii}}\ket{\beta_i} \text{, with } \beta_i\approx\arcsin\left(\sqrt{A_{ii}e^{-H_{ii}}}\right)/\pi
+\end{equation*}
+
+\vspace{1cm}
+
+Now we can apply the Transformation 
+\begin{equation*}
+\ket{1}\ket{\beta}\to (\sin(\pi\beta)\ket{0}+\cos(\pi\beta)\ket{1})\ket{\beta}
+\end{equation*}
+on an ancilla qubit:
+
+\begin{equation*}
+\frac{1}{\sqrt{n}}\sum_{i=1}^n\left(\sqrt{A_{ii}e^{-H_{ii}}}\ket{0}+\sqrt{1-A_{ii}e^{-H_{ii}}}\ket{1}\right)\ket{i}\ket{H_{ii}}\ket{A_{ii}}\ket{\beta_i}
+\end{equation*}
+\end{frame}
+
+\begin{frame}
+\begin{equation*}
+\frac{1}{\sqrt{n}}\sum_{i=1}^n\left(\sqrt{A_{ii}e^{-H_{ii}}}\ket{0}+\sqrt{1-A_{ii}e^{-H_{ii}}}\ket{1}\right)\ket{i}\ket{H_{ii}}\ket{A_{ii}}\ket{\beta_i}
+\end{equation*}
+
+The probability that this state's first qubit is 0 is:
+\begin{equation*}
+\left\|\frac{1}{\sqrt{n}}\sum_{i=1}^n\sqrt{A_{ii}e^{-H_{ii}}}\ket{i}\right\|^2=\frac{1}{n}\sum_{i=1}^n A_{ii}e^{-H_{ii}}=\frac{1}{n}\Tr(Ae^{-H})
+\end{equation*}
 \end{frame}
 
 \begin{frame}{The input of the Oracle: SDP}
 
-\textbf{Idea: } Construct circuits to calculate $\sqrt{A}$ and $\sqrt{e^{-H}}=e^{-H/2}$ seperately, then apply them to a maximally entangled state to get the Trace. (TODO: details?). 
+\textbf{Idea: } Construct circuits for $\sqrt{A}$ and $\sqrt{e^{-H}}=e^{-H/2}$, then apply them to a superposition of an orthonormal basis.
 
+\begin{block}{Problem: These matrices are not unitary}
+Instead we construct for the norm-decreasing maps $B=\sqrt{A}$ and $e^{-H/2}$ circuits with
+\begin{equation*}
+U_B\ket{0}\ket{i}=\ket{0}B\ket{i}+\ket{1}*
+\end{equation*}
+We can apply both Operations to the same $\ket{i}$ by using different ancilla qubits for each operation:
+\begin{align*}
+U_{\sqrt{A}}&U_{e^{-H/2}}\ket{0}\ket{0}\ket{i}\\
+&=U_{\sqrt{A}}(\ket{0}\ket{0}e^{-H/2}\ket{i}+\ket{0}\ket{1}*)\\
+&=\ket{0}\ket{0}\sqrt{A}e^{-H/2}\ket{i}+\ket{0}\ket{1}*+\ket{1}\ket{0}*+\ket{1}\ket{1}*
+\end{align*}
+\end{block}
+
+\end{frame}
+
+\begin{frame}{The input of the Oracle: SDP}
+When we now apply this circuit to $\ket{0}\ket{0}\sum_{i=1}^n \frac{\ket{i}\ket{i}}{\sqrt{n}}$ the probability that the first two qubits are zero is
+\begin{align*}
+&\left\|\sum_{i=1}^n\frac{\left(\sqrt{A}e^{-H/2}\ket{i}\right)\ket{i}}{\sqrt{n}}\right\|^2\\
+=&\frac{1}{n}\sum_{i=1}^n \bra{i}\left(e^{-H/2}\right)^T\sqrt{A}^T\sqrt{A}e^{-H/2}\ket{i}\\
+=&\frac{1}{n}\Tr\left(\sqrt{A}\sqrt{A}e^{-H/2}e^{-H/2}\right)\\
+=&\frac{1}{n}\Tr\left(Ae^{-H}\right)
+\end{align*}
+\end{frame}
+
+\begin{frame}{Constructing circuits for  $\sqrt{A}$ and $e^{-H/2}$}
 \begin{block}{How do we construct these circuits?}
 $\sqrt{H}$ and $e^{H}$ are functions of hamiltonians:
 \begin{equation*}
 f(H)=f(U \mathrm{Diag}(\lambda_1,\ldots, \lambda_n) U^T)=U \mathrm{Diag}(\tilde{f}(\lambda_1),\ldots,\tilde{f}(\lambda_n))U^T
 \end{equation*}
-Use a fourier series to approximate a polynomial approximation of $\tilde{f}$. Fourier series can be implemented efficiently using quantum computers. This can then be extended to apply to hermitian matrices.
+$\to$ Polynomial approximation of $\tilde{f}$\\
+$\to$ Fourier series \\
+$\to$ Quantum circuit \\
+$\to$ Extension to apply to hermitian matrices
 \end{block}
 \end{frame}
 
