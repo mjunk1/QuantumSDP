@@ -38,6 +38,27 @@
 \nocite{*}
 \frame[allowframebreaks]{\printbibliography}
 
+% oracle failure
+\begin{frame}{The $\oracle$}
+ \structure{Recall:} $\oracle_\delta(\rho)$ returns a vector $y\in\mathcal{P}_\delta(\rho)$, where
+ \begin{equation*}
+  \mathcal{P}_\delta(\rho) = \bigg\{ y\in\R^m_{\geq 0} \, \Big| \, b^T y \leq \alpha, \Tr\Big(\sum_{j=1}^m y_j A_j - C \Big)\rho  \geq -\delta \bigg\}.
+ \end{equation*}
+ If $\mathcal{P}_0(\rho)=\emptyset$, then ORACLE returns ``fail''.
+ 
+ \vspace{2\floatsep}
+ 
+ \begin{lemma}[\cite{Arora2016}]
+  If $\mathcal{P}_0(\rho)$ is empty, then a suitably scaled version of $X=R\rho$ is primal-feasible with objective value $\geq \alpha$.
+ \end{lemma}
+
+ \vspace{\floatsep}
+ 
+ \structure{$\Rightarrow$ If construction fails, we still get a primal-feasible solution.}
+ 
+
+\end{frame}
+
 %Binary->amplitude
 \begin{frame}{Transforming a binary value into a qubit amplitude}
 Let $b\in [0,1]$ be the value we want as the \structure{probability} of a qubit being 0

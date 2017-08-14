@@ -10,3 +10,5 @@
 *.backup
 *.pdf
 *.bcf
+*.gz
+talk/talk-blx.bib

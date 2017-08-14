@@ -4,34 +4,56 @@
 
 \begin{frame}{Quantum Computing in a Nutshell}
 
-\begin{columns}
- \column{0.6\linewidth}
     \begin{block}{Quantum register}
     $N$-qubit states $\ket\psi\in(\C^2)^{\otimes N}.$
     \end{block}
     
-    \vspace{\floatsep}
+    \pause
+    
+    \begin{block}{Computational basis}
+     =: orthonormal basis $\{\ket{0},\ket{1}\}\subset\C^2$. We will denote product states as
+     \begin{equation*}
+      \ket{i} = \ket{b_0,\dots,b_{N-1}} = \ket{b_0}\otimes \dots \otimes\ket{b_{N-1}} \in \left(\C^2\right)^{\otimes N},
+     \end{equation*}
+     where
+     \begin{equation*}
+       i = 1 + \sum_{j=0}^{N-1}b_j 2^j \in \{1,\dots,2^N\} 
+     \end{equation*}
 
-    \begin{block}{Quantum circuit}
-    Unitaries $U_1,\dots,U_L\in \SU(2^N)$
     \end{block}
+
+\end{frame}
+
+\begin{frame}{Quantum Computing in a Nutshell}
+
+\begin{block}{Quantum circuit}
+    Unitaries $U_1,\dots,U_L\in \SU(2^N)$ act as
+    \begin{equation*}
+     U\ket{i} = \sum_{j=1}^{2^N} U_{ji}\ket{j},
+    \end{equation*}
+    $\left(U_{ij}\right)$ = matrix representation in computational basis 
+\end{block}
+
+\pause
     
-    \vspace{\floatsep}
-    
-    \begin{block}{Measurement}
-    $\Rightarrow$ computational result
-    \end{block}
+\vspace{\floatsep}
+
+\begin{columns}
+ \column{0.6\linewidth}
  
- \column{0.4\linewidth}
-  \vspace{\floatsep}
+\hspace{3em}
     \Qcircuit @C=1em @R=1em {
       \lstick{\ket{q_1}} & \gate{U_1} & \qw & \multigate{1}{U_3} & \meter  \\
       \lstick{\ket{q_2}} & \qw & \multigate{1}{U_2} & \ghost{U_3} & \meter \\
       \lstick{\ket{q_3}} & \qw & \ghost{U_2} & \qw & \meter
     }
- 
+    
+ \column{0.4\linewidth}
+    \begin{block}{Measurement}
+    $\Rightarrow$ computational result
+    \end{block}
+    
 \end{columns}
-
 \end{frame}
 
 \begin{frame}{Quantum Algorithms}
@@ -58,10 +80,6 @@
      \caption{\footnotesize Wikipedia/BQP}
     \end{figure}
  \end{columns}
- 
-%  \begin{center}
-%   \visible<5->{\alert{Number of quantum algorithms is very limited}}
-%  \end{center}
 
 \vspace{\floatsep}
 

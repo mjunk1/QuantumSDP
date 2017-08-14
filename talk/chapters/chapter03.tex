@@ -94,7 +94,7 @@ The \structure{probability} that this state's first qubit is 0 is:
 
 \begin{frame}{The input of the Oracle: SDP}
 
-\structure{Idea: } Construct circuits for $\sqrt{A}$ and $\sqrt{e^{-H}}=e^{-H/2}$, then apply them to a superposition of the base states.
+\structure{Idea: } Construct circuits for $\sqrt{A}$ and $\sqrt{e^{-H}}=e^{-H/2}$, then evaluate $\sum_i \bra{i}\sqrt{A}\sqrt{e^{-H}}\ket{i}$ to get the trace.
 
 \begin{block}{Problem: These matrices are not unitary}
 Instead we construct for the norm-decreasing maps $B=\sqrt{A}$ and $e^{-H/2}$ circuits with
@@ -115,8 +115,9 @@ U_{\sqrt{A}}&U_{e^{-H/2}}\ket{0}\ket{0}\ket{i}\\
 \begin{frame}{The input of the Oracle: SDP}
 When we now apply this circuit to $\ket{0}\ket{0}\sum_{i=1}^n \frac{\ket{i}\ket{i}}{\sqrt{n}}$, then is the probability that the first two qubits are zero
 \begin{align*}
-&\left\|\sum_{i=1}^n\frac{\left(\sqrt{A}e^{-H/2}\ket{i}\right)\ket{i}}{\sqrt{n}}\right\|^2\\
-=&\frac{1}{n}\sum_{i=1}^n \bra{i}\left(e^{-H/2}\right)^T\sqrt{A}^T\sqrt{A}e^{-H/2}\ket{i}\\
+\left\|\sum_{i=1}^n\frac{\left(\sqrt{A}e^{-H/2}\ket{i}\right)\ket{i}}{\sqrt{n}} \right\|^2 & \\ 
+=&\frac 1 n \sum_{i,j=1}^n \left( \bra{j}\bra{j}\left(e^{-H/2}\right)^\dagger\sqrt{A}^\dagger\right)\sqrt{A}e^{-H/2}\ket{i}\ket{i} \\
+=&\frac{1}{n}\sum_{i=1}^n \bra{i}\left(e^{-H/2}\right)^\dagger\sqrt{A}^\dagger\sqrt{A}e^{-H/2}\ket{i}\\
 =&\frac{1}{n}\Tr\left(\sqrt{A}\sqrt{A}e^{-H/2}e^{-H/2}\right)\\
 =&\frac{1}{n}\Tr\left(Ae^{-H}\right)
 \end{align*}
@@ -124,14 +125,19 @@ When we now apply this circuit to $\ket{0}\ket{0}\sum_{i=1}^n \frac{\ket{i}\ket{
 
 \begin{frame}{Constructing circuits for  $\sqrt{A}$ and $e^{-H/2}$}
 \begin{block}{How do we construct these circuits?}
+
 $\sqrt{H}$ and $e^{H}$ are functions of hamiltonians:
+
 \begin{equation*}
-f(H)=f(U \mathrm{Diag}(\lambda_1,\ldots, \lambda_n) U^T)=U \mathrm{Diag}(\tilde{f}(\lambda_1),\ldots,\tilde{f}(\lambda_n))U^T
+f(H)=f(U \, \mathrm{Diag} (\lambda_1,\ldots, \lambda_n) U^\dagger)=U \, \mathrm{Diag}(\tilde{f}(\lambda_1),\ldots,\tilde{f}(\lambda_n))U^\dagger
 \end{equation*}
-$\to$ Polynomial approximation of $\tilde{f}$\\
-$\to$ Fourier series \\
-$\to$ Quantum circuit \\
-$\to$ Extension to apply to hermitian matrices
+
+\begin{itemize}
+ \item[$\to$] Polynomial approximation of $\tilde{f}$\\
+ \item[$\to$] Fourier series \\
+ \item[$\to$] Quantum circuit \\
+ \item[$\to$] Extension to apply to hermitian matrices
+\end{itemize}
 \end{block}
 \end{frame}
 
